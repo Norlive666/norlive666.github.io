@@ -3,47 +3,418 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Norlive 的个人主页</title>
+  <title>Norlive | 个人主页与资源站</title>
   <style>
+    :root {
+      --bg-color: #0b0f19;
+      --card-bg: rgba(255, 255, 255, 0.04);
+      --card-border: rgba(255, 255, 255, 0.08);
+      --card-hover-border: rgba(99, 102, 241, 0.4);
+      --text-main: #f8fafc;
+      --text-muted: #94a3b8;
+      --accent: #6366f1;
+      --accent-gradient: linear-gradient(135deg, #6366f1 0%, #a855f7 100%);
+      --accent-glow: rgba(99, 102, 241, 0.25);
+    }
+
     * { margin: 0; padding: 0; box-sizing: border-box; }
+    
     body {
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+      background-color: var(--bg-color);
+      min-height: 100vh;
+      color: var(--text-main);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 48px 20px;
+      position: relative;
+      overflow-x: hidden;
+    }
+
+    /* 背景柔光氛围球 */
+    .bg-glow-1 {
+      position: fixed;
+      width: 450px;
+      height: 450px;
+      top: -100px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: radial-gradient(circle, rgba(99, 102, 241, 0.18) 0%, transparent 70%);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .bg-glow-2 {
+      position: fixed;
+      width: 400px;
+      height: 400px;
+      bottom: -80px;
+      right: 10%;
+      background: radial-gradient(circle, rgba(168, 85, 247, 0.12) 0%, transparent 70%);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 680px;
+      display: flex;
+      flex-direction: column;
+      gap: 28px;
+      position: relative;
+      z-index: 1;
+    }
+
+    /* 顶部个人名片卡片 */
+    .profile-card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-radius: 24px;
+      padding: 36px 28px;
+      text-align: center;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+      transition: border-color 0.3s;
+    }
+
+    .profile-card:hover {
+      border-color: rgba(255, 255, 255, 0.16);
+    }
+
+    .avatar-wrapper {
+      position: relative;
+      width: 92px;
+      height: 92px;
+      margin: 0 auto 18px;
+    }
+
+    .avatar {
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      border: 2px solid rgba(255, 255, 255, 0.2);
+      box-shadow: 0 8px 24px var(--accent-glow);
+      background: #1e1b4b;
+      object-fit: cover;
+    }
+
+    .status-badge {
+      position: absolute;
+      bottom: 2px;
+      right: 4px;
+      width: 14px;
+      height: 14px;
+      background: #10b981;
+      border: 2px solid var(--bg-color);
+      border-radius: 50%;
+    }
+
+    .name {
+      font-size: 26px;
+      font-weight: 700;
+      letter-spacing: -0.5px;
+      margin-bottom: 8px;
+    }
+
+    .bio {
+      color: var(--text-muted);
+      font-size: 14px;
+      line-height: 1.6;
+      max-width: 440px;
+      margin: 0 auto 20px;
+    }
+
+    .social-links {
       display: flex;
       justify-content: center;
+      gap: 12px;
+    }
+
+    .social-btn {
+      display: inline-flex;
       align-items: center;
-      min-height: 100vh;
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-      color: #fff;
-    }
-    .card {
-      background: rgba(255, 255, 255, 0.1);
-      backdrop-filter: blur(10px);
-      padding: 40px;
-      border-radius: 16px;
-      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
-      text-align: center;
-      max-width: 400px;
-    }
-    h1 { font-size: 28px; margin-bottom: 12px; }
-    p { font-size: 16px; opacity: 0.9; margin-bottom: 24px; line-height: 1.5; }
-    .btn {
-      display: inline-block;
-      padding: 10px 24px;
-      background: #fff;
-      color: #764ba2;
-      border-radius: 20px;
+      gap: 8px;
+      padding: 9px 20px;
+      border-radius: 9999px;
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid var(--card-border);
+      color: var(--text-main);
       text-decoration: none;
-      font-weight: bold;
-      transition: transform 0.2s;
+      font-size: 13px;
+      font-weight: 500;
+      transition: all 0.25s ease;
+      cursor: pointer;
     }
-    .btn:hover { transform: scale(1.05); }
+
+    .social-btn:hover {
+      background: rgba(255, 255, 255, 0.14);
+      transform: translateY(-2px);
+      border-color: rgba(255, 255, 255, 0.25);
+    }
+
+    /* 区块标题 */
+    .section-title {
+      font-size: 16px;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 14px;
+      color: #e2e8f0;
+      padding-left: 4px;
+    }
+
+    .section-title svg {
+      color: #818cf8;
+    }
+
+    /* 资源卡片网格 */
+    .resource-list {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .resource-card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-radius: 16px;
+      padding: 18px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .resource-card:hover {
+      border-color: var(--card-hover-border);
+      background: rgba(255, 255, 255, 0.07);
+      transform: translateY(-2px);
+      box-shadow: 0 10px 24px rgba(0, 0, 0, 0.25);
+    }
+
+    .resource-info {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .icon-box {
+      width: 44px;
+      height: 44px;
+      border-radius: 12px;
+      background: rgba(99, 102, 241, 0.12);
+      border: 1px solid rgba(99, 102, 241, 0.2);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #a5b4fc;
+      flex-shrink: 0;
+    }
+
+    .resource-meta h3 {
+      font-size: 15px;
+      font-weight: 600;
+      margin-bottom: 4px;
+    }
+
+    .resource-meta p {
+      font-size: 12px;
+      color: var(--text-muted);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .badge {
+      display: inline-block;
+      padding: 2px 7px;
+      border-radius: 5px;
+      background: rgba(255, 255, 255, 0.08);
+      font-size: 11px;
+      font-weight: 500;
+      color: #cbd5e1;
+    }
+
+    .download-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 8px 16px;
+      border-radius: 10px;
+      background: var(--accent-gradient);
+      color: #fff;
+      font-size: 13px;
+      font-weight: 600;
+      text-decoration: none;
+      box-shadow: 0 4px 12px var(--accent-glow);
+      transition: all 0.2s ease;
+      flex-shrink: 0;
+    }
+
+    .download-btn:hover {
+      filter: brightness(1.15);
+      transform: scale(1.03);
+    }
+
+    /* 关于与快捷链接 */
+    .info-card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      backdrop-filter: blur(12px);
+      border-radius: 16px;
+      padding: 20px;
+      font-size: 13px;
+      color: var(--text-muted);
+      line-height: 1.7;
+    }
+
+    .info-card strong {
+      color: var(--text-main);
+    }
+
+    /* 页脚 */
+    footer {
+      text-align: center;
+      font-size: 12px;
+      color: var(--text-muted);
+      margin-top: 12px;
+      line-height: 1.8;
+      opacity: 0.8;
+    }
+
+    /* 复制提示 Toast */
+    #toast {
+      position: fixed;
+      bottom: 28px;
+      background: #10b981;
+      color: white;
+      padding: 10px 22px;
+      border-radius: 30px;
+      font-size: 13px;
+      font-weight: 500;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.4);
+      opacity: 0;
+      transform: translateY(20px);
+      transition: all 0.3s ease;
+      pointer-events: none;
+      z-index: 100;
+    }
+    #toast.show {
+      opacity: 1;
+      transform: translateY(0);
+    }
   </style>
 </head>
 <body>
-  <div class="card">
-    <h1>🎉 欢迎来到 Norlive 的网站</h1>
-    <p>我的第一个 GitHub Pages 网站现在成功上线！</p>
-    <a class="btn" href="https://github.com/Norlive666" target="_blank">访问我的 GitHub</a>
+
+  <!-- 氛围渐变球 -->
+  <div class="bg-glow-1"></div>
+  <div class="bg-glow-2"></div>
+
+  <div class="container">
+    <!-- 个人名片 -->
+    <div class="profile-card">
+      <div class="avatar-wrapper">
+        <img class="avatar" src="https://avatars.githubusercontent.com/Norlive666" alt="Norlive666 Avatar">
+        <div class="status-badge" title="Online"></div>
+      </div>
+      <h1 class="name">Norlive</h1>
+      <p class="bio">欢迎来到我的个人主页！这里记录我的项目、技术沉淀与免费资源分享。</p>
+      
+      <div class="social-links">
+        <a class="social-btn" href="https://github.com/Norlive666" target="_blank" rel="noopener">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path></svg>
+          GitHub 主页
+        </a>
+        <button class="social-btn" onclick="copyShareLink()">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"></circle><circle cx="6" cy="12" r="3"></circle><circle cx="18" cy="19" r="3"></circle><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line></svg>
+          分享网站
+        </button>
+      </div>
+    </div>
+
+    <!-- 资源下载区域 -->
+    <div>
+      <div class="section-title">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+        公共资源与文件下载
+      </div>
+
+      <div class="resource-list">
+        <!-- 资源卡片 1 -->
+        <div class="resource-card">
+          <div class="resource-info">
+            <div class="icon-box">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+            </div>
+            <div class="resource-meta">
+              <h3>项目开源指南 (README)</h3>
+              <p>
+                <span>仓库说明文件</span>
+                <span class="badge">MD</span>
+                <span class="badge">直接下载</span>
+              </p>
+            </div>
+          </div>
+          <a class="download-btn" href="README.md" download>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+            下载
+          </a>
+        </div>
+
+        <!-- 资源卡片 2 -->
+        <div class="resource-card">
+          <div class="resource-info">
+            <div class="icon-box">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="21 8 21 21 3 21 3 8"></polyline><rect x="1" y="3" width="22" height="5"></rect><line x1="10" y1="12" x2="14" y2="12"></line></svg>
+            </div>
+            <div class="resource-meta">
+              <h3>软件 / 工具实用资源包</h3>
+              <p>
+                <span>绿色免安装</span>
+                <span class="badge">ZIP</span>
+                <span class="badge">示例预留</span>
+              </p>
+            </div>
+          </div>
+          <a class="download-btn" href="#" onclick="alert('提示：请先在仓库中上传压缩包，并将此处链接替换为真实文件名！')">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+            下载
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <!-- 站点关于 -->
+    <div class="info-card">
+      💡 <strong>关于本站：</strong> 本站托管于 <strong>GitHub Pages</strong> 全球网络，无需服务器、零运维成本。后续上传任何文件至仓库即可在此挂载直链下载。
+    </div>
+
+    <!-- 页脚 -->
+    <footer>
+      <p>© 2026 Norlive · Powered by GitHub Pages</p>
+      <p style="font-size: 11px; opacity: 0.6; margin-top: 2px;">轻量 · 极速 · 开放</p>
+    </footer>
   </div>
+
+  <div id="toast">✅ 链接已复制到剪贴板！</div>
+
+  <script>
+    function copyShareLink() {
+      navigator.clipboard.writeText(window.location.href).then(() => {
+        const toast = document.getElementById('toast');
+        toast.classList.add('show');
+        setTimeout(() => toast.classList.remove('show'), 2000);
+      }).catch(() => {
+        alert('主页链接：' + window.location.href);
+      });
+    }
+  </script>
 </body>
 </html>
