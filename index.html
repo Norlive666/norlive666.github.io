@@ -3,62 +3,76 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Norlive | 典雅书卷与资源阁</title>
+  <title>Norlive | 个人博客与资源站</title>
   <style>
     :root {
       --bg-paper: #fbf8f3;
       --card-bg: #fffdf9;
-      --card-inner: #f7f3ec;
-      --border-color: #e5ded3;
+      --card-muted: #f6f1e8;
+      --border-color: #e6dfd3;
       --border-hover: #c4b5a0;
       --text-main: #2b2520;
       --text-muted: #796f64;
       --accent: #9a3412;
       --accent-hover: #7c2d12;
-      --accent-subtle: #fbf3ee;
-      --card-shadow: 0 4px 20px rgba(78, 62, 45, 0.05);
+      --accent-bg: #fbf3ee;
+      --shadow: 0 4px 20px rgba(78, 62, 45, 0.05);
     }
 
     * { margin: 0; padding: 0; box-sizing: border-box; }
 
     body {
-      font-family: Georgia, "Songti SC", "Noto Serif SC", "Source Han Serif SC", "STSong", "Hiragino Mincho ProN", serif;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", serif;
       background-color: var(--bg-paper);
       min-height: 100vh;
       color: var(--text-main);
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      padding: 56px 20px 40px;
+      padding: 40px 20px 60px;
       line-height: 1.7;
     }
 
-    /* 整体容器 */
+    /* 主容器：双栏栅格 */
     .container {
       width: 100%;
-      max-width: 680px;
-      display: flex;
-      flex-direction: column;
+      max-width: 960px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 1fr;
       gap: 32px;
     }
 
-    /* 顶部主卡片：书卷印章质感 */
-    .profile-card {
-      background: var(--card-bg);
-      border: 1px solid var(--border-color);
-      border-radius: 20px;
-      padding: 42px 32px;
-      text-align: center;
-      box-shadow: var(--card-shadow);
+    @media (min-width: 768px) {
+      .container {
+        grid-template-columns: 300px 1fr;
+        gap: 36px;
+      }
+    }
+
+    /* 左侧边栏 */
+    .sidebar {
       position: relative;
     }
 
-    /* 头像区域 */
-    .avatar-wrapper {
-      position: relative;
+    .sidebar-inner {
+      background: var(--card-bg);
+      border: 1px solid var(--border-color);
+      border-radius: 18px;
+      padding: 32px 24px;
+      text-align: center;
+      box-shadow: var(--shadow);
+    }
+
+    @media (min-width: 768px) {
+      .sidebar-inner {
+        position: sticky;
+        top: 36px;
+      }
+    }
+
+    .avatar-box {
       width: 88px;
       height: 88px;
-      margin: 0 auto 20px;
+      margin: 0 auto 16px;
+      position: relative;
     }
 
     .avatar {
@@ -66,43 +80,51 @@
       height: 100%;
       border-radius: 50%;
       border: 3px solid #f2ece1;
-      box-shadow: 0 6px 16px rgba(60, 48, 35, 0.08);
       object-fit: cover;
-      background-color: #eee7dc;
+      box-shadow: 0 6px 16px rgba(60, 48, 35, 0.08);
+      background: #eee7dc;
     }
 
     .name {
-      font-size: 28px;
+      font-size: 24px;
       font-weight: 700;
-      letter-spacing: 1px;
-      margin-bottom: 8px;
-      color: var(--text-main);
+      letter-spacing: 0.5px;
+      margin-bottom: 6px;
+      font-family: Georgia, "Songti SC", serif;
+    }
+
+    .tagline {
+      font-size: 13px;
+      color: var(--accent);
+      font-weight: 600;
+      margin-bottom: 14px;
     }
 
     .bio {
+      font-size: 13px;
       color: var(--text-muted);
-      font-size: 15px;
-      max-width: 440px;
-      margin: 0 auto 24px;
-      letter-spacing: 0.5px;
+      line-height: 1.6;
+      margin-bottom: 24px;
+      text-align: left;
     }
 
-    /* 按钮组 */
-    .action-links {
+    /* 边栏按钮 */
+    .sidebar-actions {
       display: flex;
-      justify-content: center;
-      gap: 12px;
+      flex-direction: column;
+      gap: 10px;
+      margin-bottom: 24px;
     }
 
     .btn {
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
       display: inline-flex;
       align-items: center;
-      gap: 6px;
-      padding: 8px 18px;
+      justify-content: center;
+      gap: 8px;
+      padding: 9px 16px;
       border-radius: 8px;
       font-size: 13px;
-      font-weight: 500;
+      font-weight: 600;
       text-decoration: none;
       transition: all 0.2s ease;
       cursor: pointer;
@@ -117,11 +139,10 @@
     .btn-primary:hover {
       background: var(--accent-hover);
       border-color: var(--accent-hover);
-      transform: translateY(-1px);
     }
 
     .btn-outline {
-      background: var(--card-inner);
+      background: var(--card-muted);
       color: var(--text-main);
       border: 1px solid var(--border-color);
     }
@@ -129,27 +150,129 @@
     .btn-outline:hover {
       background: #eee8dc;
       border-color: var(--border-hover);
-      transform: translateY(-1px);
     }
 
-    /* 分类标题 */
+    /* 边栏元信息 */
+    .sidebar-meta {
+      border-top: 1px solid var(--border-color);
+      padding-top: 20px;
+      text-align: left;
+      font-size: 12px;
+      color: var(--text-muted);
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .meta-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    /* 右侧主内容 */
+    .main-content {
+      display: flex;
+      flex-direction: column;
+      gap: 32px;
+    }
+
+    /* 板块通用头部 */
+    .section-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid var(--border-color);
+      padding-bottom: 12px;
+      margin-bottom: 18px;
+    }
+
     .section-title {
-      font-size: 17px;
+      font-size: 18px;
       font-weight: 700;
-      letter-spacing: 1px;
       display: flex;
       align-items: center;
       gap: 8px;
-      margin-bottom: 16px;
+      font-family: Georgia, "Songti SC", serif;
       color: var(--text-main);
-      padding-left: 2px;
     }
 
     .section-title svg {
       color: var(--accent);
     }
 
-    /* 资源列表 */
+    .section-count {
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+
+    /* 博客文章列表 */
+    .article-list {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .article-card {
+      background: var(--card-bg);
+      border: 1px solid var(--border-color);
+      border-radius: 14px;
+      padding: 22px;
+      box-shadow: var(--shadow);
+      transition: all 0.25s ease;
+      cursor: pointer;
+      text-decoration: none;
+      color: inherit;
+      display: block;
+    }
+
+    .article-card:hover {
+      border-color: var(--accent);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(78, 62, 45, 0.08);
+    }
+
+    .article-meta {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 12px;
+      color: var(--text-muted);
+      margin-bottom: 8px;
+    }
+
+    .badge {
+      display: inline-block;
+      padding: 2px 7px;
+      border-radius: 4px;
+      background: var(--card-muted);
+      border: 1px solid var(--border-color);
+      font-size: 11px;
+      font-weight: 500;
+      color: var(--accent);
+    }
+
+    .article-title {
+      font-size: 17px;
+      font-weight: 700;
+      margin-bottom: 8px;
+      line-height: 1.4;
+      font-family: Georgia, "Songti SC", serif;
+      color: var(--text-main);
+      transition: color 0.2s;
+    }
+
+    .article-card:hover .article-title {
+      color: var(--accent);
+    }
+
+    .article-summary {
+      font-size: 13px;
+      color: var(--text-muted);
+      line-height: 1.6;
+    }
+
+    /* 资源下载卡片 */
     .resource-list {
       display: flex;
       flex-direction: column;
@@ -160,31 +283,31 @@
       background: var(--card-bg);
       border: 1px solid var(--border-color);
       border-radius: 14px;
-      padding: 20px 22px;
+      padding: 18px 20px;
       display: flex;
       align-items: center;
       justify-content: space-between;
-      box-shadow: var(--card-shadow);
+      box-shadow: var(--shadow);
       transition: all 0.25s ease;
     }
 
     .resource-card:hover {
       border-color: var(--border-hover);
       transform: translateY(-2px);
-      box-shadow: 0 8px 24px rgba(78, 62, 45, 0.08);
+      box-shadow: 0 6px 20px rgba(78, 62, 45, 0.07);
     }
 
     .resource-left {
       display: flex;
       align-items: center;
-      gap: 16px;
+      gap: 14px;
     }
 
     .icon-box {
       width: 44px;
       height: 44px;
       border-radius: 10px;
-      background: var(--accent-subtle);
+      background: var(--accent-bg);
       border: 1px solid #fae4d7;
       display: flex;
       align-items: center;
@@ -194,34 +317,21 @@
     }
 
     .resource-title {
-      font-size: 16px;
+      font-size: 15px;
       font-weight: 700;
       margin-bottom: 4px;
       color: var(--text-main);
     }
 
     .resource-desc {
-      font-size: 13px;
+      font-size: 12px;
       color: var(--text-muted);
       display: flex;
       align-items: center;
       gap: 8px;
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-    }
-
-    .badge {
-      display: inline-block;
-      padding: 1px 7px;
-      border-radius: 4px;
-      background: var(--card-inner);
-      border: 1px solid var(--border-color);
-      font-size: 11px;
-      font-weight: 500;
-      color: var(--text-muted);
     }
 
     .download-action {
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
       display: inline-flex;
       align-items: center;
       gap: 6px;
@@ -241,33 +351,33 @@
       transform: scale(1.02);
     }
 
-    /* 卷首寄语 / 关于 */
-    .note-card {
+    /* 底部关于 */
+    .about-box {
       background: var(--card-bg);
       border: 1px dashed var(--border-color);
       border-radius: 14px;
-      padding: 20px 24px;
-      font-size: 14px;
+      padding: 20px;
+      font-size: 13px;
       color: var(--text-muted);
-      line-height: 1.8;
-      box-shadow: var(--card-shadow);
+      line-height: 1.7;
     }
 
-    .note-card strong {
-      color: var(--accent);
-      font-weight: 600;
+    .about-box strong {
+      color: var(--text-main);
     }
 
     /* 页脚 */
     footer {
+      grid-column: 1 / -1;
       text-align: center;
-      font-size: 13px;
+      font-size: 12px;
       color: var(--text-muted);
       margin-top: 10px;
-      letter-spacing: 0.5px;
+      padding-top: 20px;
+      border-top: 1px solid var(--border-color);
     }
 
-    /* 复制 Toast */
+    /* Toast */
     #toast {
       position: fixed;
       bottom: 28px;
@@ -282,7 +392,6 @@
       transition: all 0.3s ease;
       pointer-events: none;
       z-index: 100;
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
     }
 
     #toast.show {
@@ -294,90 +403,149 @@
 <body>
 
   <div class="container">
-    <!-- 个人名片 -->
-    <div class="profile-card">
-      <div class="avatar-wrapper">
-        <img class="avatar" src="https://avatars.githubusercontent.com/Norlive666" alt="Norlive 头像">
+    <!-- 左侧固定信息栏 -->
+    <aside class="sidebar">
+      <div class="sidebar-inner">
+        <div class="avatar-box">
+          <img class="avatar" src="https://avatars.githubusercontent.com/Norlive666" alt="Norlive 头像">
+        </div>
+        <h1 class="name">Norlive</h1>
+        <div class="tagline">记录思考 · 资源分享</div>
+        <p class="bio">欢迎来到我的个人网站！这里记录我的项目实践、技术文章与公开资源。</p>
+
+        <div class="sidebar-actions">
+          <a class="btn btn-primary" href="https://github.com/Norlive666" target="_blank" rel="noopener">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path></svg>
+            GitHub 主页
+          </a>
+          <button class="btn btn-outline" onclick="copyShareLink()">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"></circle><circle cx="6" cy="12" r="3"></circle><circle cx="18" cy="19" r="3"></circle><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line></svg>
+            分享网站
+          </button>
+        </div>
+
+        <div class="sidebar-meta">
+          <div class="meta-row">
+            <span>托管平台</span>
+            <span style="font-weight: 600; color: var(--text-main);">GitHub Pages</span>
+          </div>
+          <div class="meta-row">
+            <span>更新频率</span>
+            <span>持续更新</span>
+          </div>
+          <div class="meta-row">
+            <span>内容分类</span>
+            <span>技术 / 随笔 / 资源</span>
+          </div>
+        </div>
       </div>
-      <h1 class="name">Norlive</h1>
-      <p class="bio">「纸墨寄怀，以文会友」· 记录技术实践、生活杂感与公开资源收藏。</p>
+    </aside>
+
+    <!-- 右侧主体内容流 -->
+    <main class="main-content">
       
-      <div class="action-links">
-        <a class="btn btn-primary" href="https://github.com/Norlive666" target="_blank" rel="noopener">
-          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path></svg>
-          GitHub 阁
-        </a>
-        <button class="btn btn-outline" onclick="copyShareLink()">
-          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"></circle><circle cx="6" cy="12" r="3"></circle><circle cx="18" cy="19" r="3"></circle><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line></svg>
-          分享斋址
-        </button>
-      </div>
-    </div>
-
-    <!-- 资源典藏专区 -->
-    <div>
-      <div class="section-title">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg>
-        公共资源与藏本下载
-      </div>
-
-      <div class="resource-list">
-        <!-- 资源卡片 1 -->
-        <div class="resource-card">
-          <div class="resource-left">
-            <div class="icon-box">
-              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
-            </div>
-            <div>
-              <div class="resource-title">项目开卷指南 (README)</div>
-              <div class="resource-desc">
-                <span>仓库原初记述</span>
-                <span class="badge">MD 纯文本</span>
-                <span class="badge">直接下载</span>
-              </div>
-            </div>
+      <!-- 博客文章专栏 -->
+      <section>
+        <div class="section-header">
+          <div class="section-title">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"></path><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path></svg>
+            最新博客文章
           </div>
-          <a class="download-action" href="README.md" download>
-            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
-            取阅
-          </a>
+          <div class="section-count">持续写作中</div>
         </div>
 
-        <!-- 资源卡片 2 -->
-        <div class="resource-card">
-          <div class="resource-left">
-            <div class="icon-box">
-              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="21 8 21 21 3 21 3 8"></polyline><rect x="1" y="3" width="22" height="5"></rect><line x1="10" y1="12" x2="14" y2="12"></line></svg>
+        <div class="article-list">
+          <!-- 示例博文 1 -->
+          <article class="article-card">
+            <div class="article-meta">
+              <span class="badge">建站技术</span>
+              <time>2026-10-08</time>
             </div>
-            <div>
-              <div class="resource-title">实用工具与资源卷宗</div>
-              <div class="resource-desc">
-                <span>绿色即用便携包</span>
-                <span class="badge">ZIP 归档</span>
-                <span class="badge">待载入</span>
+            <h2 class="article-title">借助 GitHub Pages 零成本搭建个人网站与博客</h2>
+            <p class="article-summary">记录从创建仓库、配置部署流程到选择排版风格的全过程心得。利用纯静态部署，无需服务器、零运维成本发布属于自己的独立自留地...</p>
+          </article>
+
+          <!-- 示例博文 2 -->
+          <article class="article-card">
+            <div class="article-meta">
+              <span class="badge">个人思考</span>
+              <time>2026-09-30</time>
+            </div>
+            <h2 class="article-title">为什么我坚持拥抱属于自己的独立博客</h2>
+            <p class="article-summary">在这个信息碎片化与算法分发的时代，拥有一片能够沉淀长文、自主掌握数据与表达节奏的数字花园究竟意味着什么...</p>
+          </article>
+        </div>
+      </section>
+
+      <!-- 公共资源与下载专栏 -->
+      <section>
+        <div class="section-header">
+          <div class="section-title">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+            公共资源与文件下载
+          </div>
+          <div class="section-count">点击即可下载</div>
+        </div>
+
+        <div class="resource-list">
+          <!-- 资源卡片 1 -->
+          <div class="resource-card">
+            <div class="resource-left">
+              <div class="icon-box">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+              </div>
+              <div>
+                <div class="resource-title">项目开源指南 (README)</div>
+                <div class="resource-desc">
+                  <span>仓库说明文档</span>
+                  <span class="badge">MD</span>
+                  <span>直接下载</span>
+                </div>
               </div>
             </div>
+            <a class="download-action" href="README.md" download>
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+              下载
+            </a>
           </div>
-          <a class="download-action" href="#" onclick="alert('请在仓库中上传您的压缩包，并将本卡片的链接替换为对应文件！')">
-            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
-            取阅
-          </a>
-        </div>
-      </div>
-    </div>
 
-    <!-- 斋志说明 -->
-    <div class="note-card">
-      📜 <strong>斋志：</strong> 此阁依托 <strong>GitHub Pages</strong> 结庐而建，免除伺服器修葺之累。往后凡有良卷、新件欲飨同好，径投仓廪，便可在此列席供众人随时查阅下载。
-    </div>
+          <!-- 资源卡片 2 -->
+          <div class="resource-card">
+            <div class="resource-left">
+              <div class="icon-box">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="21 8 21 21 3 21 3 8"></polyline><rect x="1" y="3" width="22" height="5"></rect><line x1="10" y1="12" x2="14" y2="12"></line></svg>
+              </div>
+              <div>
+                <div class="resource-title">实用工具与资源压缩包</div>
+                <div class="resource-desc">
+                  <span>便携绿色版</span>
+                  <span class="badge">ZIP</span>
+                  <span>示例预留</span>
+                </div>
+              </div>
+            </div>
+            <a class="download-action" href="#" onclick="alert('请在仓库中上传您的压缩包，并将本卡片的链接替换为对应文件！')">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+              下载
+            </a>
+          </div>
+        </div>
+      </section>
+
+      <!-- 站点说明 -->
+      <section class="about-box">
+        💡 <strong>关于本站：</strong> 本站基于 <strong>GitHub Pages</strong> 纯静态网络托管，零服务器成本。后续可在右侧持续更新博文篇章，或上传任何文件至仓库作为直链资源供大家查阅下载。
+      </section>
+
+    </main>
 
     <!-- 页脚 -->
     <footer>
-      <p>岁在丙午 · Norlive · 谨制于 GitHub Pages</p>
+      <p>© 2026 Norlive · 基于 GitHub Pages 构建 · 轻量 · 极速 · 开放</p>
     </footer>
   </div>
 
-  <div id="toast">📜 斋址已录入剪贴板</div>
+  <div id="toast">✅ 网站链接已复制到剪贴板！</div>
 
   <script>
     function copyShareLink() {
