@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>关于本站与项目说明 (README) | Norlive</title>
+  <style>
+    :root {
+      --bg-paper: #fbf8f3;
+      --card-bg: #fffdf9;
+      --card-muted: #f6f1e8;
+      --border-color: #e6dfd3;
+      --border-hover: #c4b5a0;
+      --text-main: #2b2520;
+      --text-muted: #796f64;
+      --accent: #9a3412;
+      --accent-hover: #7c2d12;
+      --accent-bg: #fbf3ee;
+      --shadow: 0 4px 20px rgba(78, 62, 45, 0.05);
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", serif;
+      background-color: var(--bg-paper);
+      min-height: 100vh;
+      color: var(--text-main);
+      padding: 40px 20px 60px;
+      line-height: 1.8;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 760px;
+      margin: 0 auto;
+    }
+
+    /* 顶部导航与返回按钮 */
+    .top-nav {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 36px;
+    }
+
+    .back-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      color: var(--accent);
+      text-decoration: none;
+      font-size: 14px;
+      font-weight: 600;
+      padding: 6px 14px;
+      border-radius: 8px;
+      background: var(--card-bg);
+      border: 1px solid var(--border-color);
+      transition: all 0.2s;
+    }
+
+    .back-btn:hover {
+      background: var(--accent);
+      color: #fffdf9;
+      border-color: var(--accent);
+    }
+
+    /* 文章主卡片 */
+    .article-box {
+      background: var(--card-bg);
+      border: 1px solid var(--border-color);
+      border-radius: 20px;
+      padding: 40px 32px;
+      box-shadow: var(--shadow);
+    }
+
+    @media (min-width: 768px) {
+      .article-box {
+        padding: 48px;
+      }
+    }
+
+    .meta-bar {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-size: 13px;
+      color: var(--text-muted);
+      margin-bottom: 16px;
+    }
+
+    .badge {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 4px;
+      background: var(--accent-bg);
+      border: 1px solid #fae4d7;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--accent);
+    }
+
+    .article-header h1 {
+      font-size: 28px;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+      margin-bottom: 24px;
+      line-height: 1.4;
+      font-family: Georgia, "Songti SC", serif;
+      border-bottom: 1px solid var(--border-color);
+      padding-bottom: 20px;
+    }
+
+    /* 正文样式 */
+    .content {
+      font-size: 15px;
+      color: var(--text-main);
+    }
+
+    .content h2 {
+      font-size: 20px;
+      font-weight: 700;
+      margin: 28px 0 14px;
+      font-family: Georgia, "Songti SC", serif;
+      color: var(--text-main);
+    }
+
+    .content h3 {
+      font-size: 17px;
+      font-weight: 600;
+      margin: 20px 0 10px;
+    }
+
+    .content p {
+      margin-bottom: 16px;
+    }
+
+    .content ul, .content ol {
+      margin: 0 0 16px 24px;
+    }
+
+    .content li {
+      margin-bottom: 6px;
+    }
+
+    .content code {
+      background: var(--card-muted);
+      border: 1px solid var(--border-color);
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-size: 13px;
+      font-family: monospace;
+    }
+
+    .content pre {
+      background: var(--card-muted);
+      border: 1px solid var(--border-color);
+      padding: 16px;
+      border-radius: 10px;
+      overflow-x: auto;
+      margin-bottom: 20px;
+      font-size: 13px;
+      line-height: 1.5;
+    }
+
+    .content blockquote {
+      border-left: 3px solid var(--accent);
+      padding-left: 16px;
+      color: var(--text-muted);
+      margin: 18px 0;
+      background: var(--accent-bg);
+      padding: 12px 16px;
+      border-radius: 0 8px 8px 0;
+    }
+
+    .source-raw-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 13px;
+      color: var(--accent);
+      text-decoration: none;
+      font-weight: 600;
+      margin-top: 24px;
+      padding: 6px 14px;
+      border-radius: 6px;
+      background: var(--card-muted);
+      border: 1px solid var(--border-color);
+    }
+
+    .source-raw-btn:hover {
+      background: #eee8dc;
+    }
+
+    /* 页脚 */
+    footer {
+      text-align: center;
+      font-size: 12px;
+      color: var(--text-muted);
+      margin-top: 40px;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <!-- 顶部导航 -->
+    <nav class="top-nav">
+      <a class="back-btn" href="index.html">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+        返回首页
+      </a>
+      <span style="font-size: 13px; color: var(--text-muted);">Norlive 的博客</span>
+    </nav>
+
+    <!-- 文章正文 -->
+    <main class="article-box">
+      <div class="meta-bar">
+        <span class="badge">项目说明</span>
+        <time id="post-date">2026-10-09</time>
+        <span>· 作者：Norlive</span>
+      </div>
+
+      <header class="article-header">
+        <h1 id="post-title">关于本站与项目指南 (README)</h1>
+      </header>
+
+      <div class="content" id="article-content">
+        <blockquote>
+          📌 本文同步自仓库根目录的 <code>README.md</code> 说明文件，记录站点基本信息与指南。
+        </blockquote>
+
+        <h2>📖 项目背景</h2>
+        <p>本项目为 Norlive 的个人主页与技术资源仓库，借助 <strong>GitHub Pages</strong> 零成本部署搭建。</p>
+
+        <h2>🚀 站点功能与架构</h2>
+        <ul>
+          <li><strong>个人博客专栏</strong>：记录平时开发心得、技术笔记与思想沉淀。</li>
+          <li><strong>公共资源下载</strong>：直接提供免登录、免限速的文件直链下载。</li>
+          <li><strong>极速全球访问</strong>：基于 GitHub 全球 CDN 边缘网络托管，零服务器维护成本。</li>
+        </ul>
+
+        <h2>📂 文件与仓库</h2>
+        <p>本仓库开源地址位于 GitHub，任何人均可阅读公开代码与说明：</p>
+        <p><a href="https://github.com/Norlive666/norlive666.github.io" target="_blank" style="color: var(--accent); font-weight: 600;">👉 访问 GitHub 仓库源码</a></p>
+
+        <a class="source-raw-btn" href="README.md" target="_blank">
+          📄 查看原始 README.md 纯文本文件
+        </a>
+      </div>
+    </main>
+
+    <footer>
+      <p>© 2026 Norlive · 基于 GitHub Pages 构建</p>
+    </footer>
+  </div>
+
+</body>
+</html>
