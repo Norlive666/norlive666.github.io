@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>关于本站与项目说明 (README) | Norlive</title>
+  <title>个人博客网站项目 (README) | T大帅</title>
   <style>
     :root {
       --bg-paper: #fbf8f3;
@@ -52,7 +52,7 @@
       text-decoration: none;
       font-size: 14px;
       font-weight: 600;
-      padding: 6px 14px;
+      padding: 7px 16px;
       border-radius: 8px;
       background: var(--card-bg);
       border: 1px solid var(--border-color);
@@ -70,7 +70,7 @@
       background: var(--card-bg);
       border: 1px solid var(--border-color);
       border-radius: 20px;
-      padding: 40px 32px;
+      padding: 36px 28px;
       box-shadow: var(--shadow);
     }
 
@@ -117,12 +117,22 @@
       color: var(--text-main);
     }
 
+    .content h1 {
+      font-size: 24px;
+      font-weight: 700;
+      margin: 32px 0 16px;
+      font-family: Georgia, "Songti SC", serif;
+      color: var(--text-main);
+    }
+
     .content h2 {
       font-size: 20px;
       font-weight: 700;
       margin: 28px 0 14px;
       font-family: Georgia, "Songti SC", serif;
       color: var(--text-main);
+      border-left: 3px solid var(--accent);
+      padding-left: 10px;
     }
 
     .content h3 {
@@ -140,7 +150,7 @@
     }
 
     .content li {
-      margin-bottom: 6px;
+      margin-bottom: 8px;
     }
 
     .content code {
@@ -150,17 +160,7 @@
       border-radius: 4px;
       font-size: 13px;
       font-family: monospace;
-    }
-
-    .content pre {
-      background: var(--card-muted);
-      border: 1px solid var(--border-color);
-      padding: 16px;
-      border-radius: 10px;
-      overflow-x: auto;
-      margin-bottom: 20px;
-      font-size: 13px;
-      line-height: 1.5;
+      color: var(--accent);
     }
 
     .content blockquote {
@@ -182,7 +182,7 @@
       text-decoration: none;
       font-weight: 600;
       margin-top: 24px;
-      padding: 6px 14px;
+      padding: 7px 14px;
       border-radius: 6px;
       background: var(--card-muted);
       border: 1px solid var(--border-color);
@@ -210,51 +210,137 @@
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
         返回首页
       </a>
-      <span style="font-size: 13px; color: var(--text-muted);">Norlive 的博客</span>
+      <span style="font-size: 13px; color: var(--text-muted);">T大帅的个人博客</span>
     </nav>
 
     <!-- 文章正文 -->
     <main class="article-box">
       <div class="meta-bar">
         <span class="badge">项目说明</span>
-        <time id="post-date">2026-10-09</time>
-        <span>· 作者：Norlive</span>
+        <span>2026-10-09</span>
+        <span>· 作者：T大帅</span>
       </div>
 
       <header class="article-header">
-        <h1 id="post-title">norlive666.github.io 项目随笔 (README)</h1>
+        <h1 id="post-title">个人博客网站项目</h1>
       </header>
 
+      <!-- 文章渲染容器 -->
       <div class="content" id="article-content">
-        <blockquote>
-          📌 本文同步自仓库根目录的 <code>README.md</code> 说明文件。
-        </blockquote>
+        <!-- 默认展示最新内容，JS 会自动拉取最新的 README.md 进行无感更新 -->
+        <h2>1. 网站简介</h2>
+        <p>这是一个由 <em>AI</em> 辅助搭建的<strong>个人博客页面</strong>。我将在这里分享我个人的学习心得，以及我个人应用的下载包。</p>
 
-        <p style="font-size: 16px; margin: 24px 0 20px;">
-          这是一个我最近在尝试的个人网站博客项目。<strong>全程由 AI 接管搭建。</strong>
-        </p>
+        <h2>2. 目的</h2>
+        <p>我希望通过该网站以一种更简单直接的方式向更多的人分享我开发的更好用的东西。希望以此为大家抹平信息差/提供一种更方便的工具。</p>
 
-        <h2>🚀 具体部署方法</h2>
-        <p>其实非常简单，仅需两步：</p>
-        <ol>
-          <li>新建一个 GitHub 仓库，命名为：<code>&lt;用户名.github.io&gt;</code>（例如 <code>norlive666.github.io</code>）。</li>
-          <li>在仓库根目录新建一个 <code>index.html</code> 网页文件即可，GitHub 会自动启动 Pages 构建并发布上线。</li>
-        </ol>
+        <h2>3. 网站搭建</h2>
+        <p>本网站借助 GitHub 的 Pages 功能免费部署。方法如下：</p>
+        <ul>
+          <li>新建仓库并命名。注：格式必须严格按照 <code>&lt;用户名&gt;.github.io</code> 的格式。<em>例如：norlive666.github.io</em></li>
+          <li>在仓库根目录新建一个 <code>index.html</code> 网页文件即可，GitHub 会自动启动 Pages 构建并发布上线。具体代码可参考本人仓库。</li>
+        </ul>
+      </div>
 
-        <h2>📂 仓库与源码</h2>
-        <p>本项目代码全部开源公开，欢迎交流与 Star：</p>
-        <p><a href="https://github.com/Norlive666/norlive666.github.io" target="_blank" style="color: var(--accent); font-weight: 600;">👉 访问 GitHub 仓库源码</a></p>
-
+      <div style="border-top: 1px solid var(--border-color); margin-top: 32px; padding-top: 20px;">
         <a class="source-raw-btn" href="README.md" target="_blank">
-          📄 查看原始 README.md 纯文本文件
+          📄 查看原始 README.md 源文件
         </a>
       </div>
     </main>
 
     <footer>
-      <p>© 2026 Norlive · 基于 GitHub Pages 构建</p>
+      <p>© 2026 T大帅 · 基于 GitHub Pages 构建</p>
     </footer>
   </div>
 
+  <!-- 自动动态同步 README.md 脚本：避免浏览器缓存，每次访问都自动拉取最新仓库 README -->
+  <script>
+    (function syncLatestReadme() {
+      // 携带时间戳参数，彻底绕过浏览器与 CDN 的旧缓存
+      fetch('README.md?_t=' + new Date().getTime())
+        .then(response => {
+          if (!response.ok) throw new Error('Network response was not ok');
+          return response.text();
+        })
+        .then(mdText => {
+          if (!mdText || mdText.trim().length === 0) return;
+
+          // 简易 Markdown 解析器
+          const lines = mdText.split('\n');
+          let html = '';
+          let inList = false;
+          let titleSet = false;
+
+          for (let i = 0; i < lines.length; i++) {
+            let line = lines[i].trim();
+
+            if (!line) {
+              if (inList) { html += '</ul>'; inList = false; }
+              continue;
+            }
+
+            // 处理一级标题 #
+            if (line.startsWith('# ')) {
+              if (inList) { html += '</ul>'; inList = false; }
+              const titleText = line.replace(/^#\s+/, '').trim();
+              if (!titleSet) {
+                document.getElementById('post-title').innerText = titleText;
+                document.title = titleText + ' | T大帅';
+                titleSet = true;
+                continue;
+              } else {
+                html += '<h1>' + escapeAndFormat(titleText) + '</h1>';
+                continue;
+              }
+            }
+
+            // 处理二级标题 ##
+            if (line.startsWith('## ')) {
+              if (inList) { html += '</ul>'; inList = false; }
+              html += '<h2>' + escapeAndFormat(line.replace(/^##\s+/, '')) + '</h2>';
+              continue;
+            }
+
+            // 处理三级标题 ###
+            if (line.startsWith('### ')) {
+              if (inList) { html += '</ul>'; inList = false; }
+              html += '<h3>' + escapeAndFormat(line.replace(/^###\s+/, '')) + '</h3>';
+              continue;
+            }
+
+            // 处理列表 - 
+            if (line.startsWith('- ') || line.startsWith('* ')) {
+              if (!inList) { html += '<ul>'; inList = true; }
+              html += '<li>' + escapeAndFormat(line.replace(/^[-*]\s+/, '')) + '</li>';
+              continue;
+            }
+
+            // 普通段落
+            if (inList) { html += '</ul>'; inList = false; }
+            html += '<p>' + escapeAndFormat(line) + '</p>';
+          }
+
+          if (inList) html += '</ul>';
+
+          if (html.length > 20) {
+            document.getElementById('article-content').innerHTML = html;
+          }
+        })
+        .catch(err => {
+          console.log('Using pre-rendered content:', err);
+        });
+
+      function escapeAndFormat(str) {
+        return str
+          .replace(/&/g, '&amp;')
+          .replace(/</g, '&lt;')
+          .replace(/>/g, '&gt;')
+          .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+          .replace(/\*(.*?)\*/g, '<em>$1</em>')
+          .replace(/`([^`]+)`/g, '<code>$1</code>');
+      }
+    })();
+  </script>
 </body>
 </html>
