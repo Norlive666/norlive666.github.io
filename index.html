@@ -206,11 +206,50 @@
       color: var(--text-muted);
     }
 
-    /* 博客文章列表 */
+    /* 博客文章列表（带视窗滑条） */
     .article-list {
       display: flex;
       flex-direction: column;
       gap: 16px;
+      max-height: 440px;
+      overflow-y: auto;
+      scrollbar-gutter: stable;
+      padding: 4px 6px 4px 2px;
+    }
+
+    /* 资源下载卡片（带视窗滑条） */
+    .resource-list {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      max-height: 250px;
+      overflow-y: auto;
+      scrollbar-gutter: stable;
+      padding: 4px 6px 4px 2px;
+    }
+
+    /* 优雅精致细滑条（温润纸墨质感） */
+    .article-list::-webkit-scrollbar,
+    .resource-list::-webkit-scrollbar {
+      width: 5px;
+    }
+
+    .article-list::-webkit-scrollbar-track,
+    .resource-list::-webkit-scrollbar-track {
+      background: rgba(230, 223, 211, 0.35);
+      border-radius: 9999px;
+    }
+
+    .article-list::-webkit-scrollbar-thumb,
+    .resource-list::-webkit-scrollbar-thumb {
+      background: rgba(154, 52, 18, 0.25);
+      border-radius: 9999px;
+      transition: background 0.2s;
+    }
+
+    .article-list::-webkit-scrollbar-thumb:hover,
+    .resource-list::-webkit-scrollbar-thumb:hover {
+      background: rgba(154, 52, 18, 0.6);
     }
 
     .article-card {
@@ -270,13 +309,6 @@
       font-size: 13px;
       color: var(--text-muted);
       line-height: 1.6;
-    }
-
-    /* 资源下载卡片 */
-    .resource-list {
-      display: flex;
-      flex-direction: column;
-      gap: 14px;
     }
 
     .resource-card {
