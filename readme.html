@@ -72,6 +72,9 @@
       border-radius: 20px;
       padding: 36px 28px;
       box-shadow: var(--shadow);
+      word-break: break-word;
+      overflow-wrap: anywhere;
+      box-sizing: border-box;
     }
 
     @media (min-width: 768px) {
@@ -115,6 +118,8 @@
     .content {
       font-size: 15px;
       color: var(--text-main);
+      word-break: break-word;
+      overflow-wrap: anywhere;
     }
 
     .content h1 {
@@ -143,6 +148,8 @@
 
     .content p {
       margin-bottom: 16px;
+      word-break: break-word;
+      overflow-wrap: anywhere;
     }
 
     .content ul, .content ol {
@@ -151,6 +158,8 @@
 
     .content li {
       margin-bottom: 8px;
+      word-break: break-word;
+      overflow-wrap: anywhere;
     }
 
     .content code {
@@ -161,6 +170,12 @@
       font-size: 13px;
       font-family: monospace;
       color: var(--accent);
+      word-break: break-word;
+      overflow-wrap: anywhere;
+      white-space: normal;
+      display: inline-block;
+      vertical-align: baseline;
+      margin: 1px 2px;
     }
 
     .content blockquote {
