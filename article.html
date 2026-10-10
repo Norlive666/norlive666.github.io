@@ -32,7 +32,7 @@
 
     .container {
       width: 100%;
-      max-width: 760px;
+      max-width: 800px;
       margin: 0 auto;
     }
 
@@ -182,6 +182,8 @@
       border-radius: 8px;
       overflow-x: auto;
       margin-bottom: 18px;
+      font-size: 13px;
+      line-height: 1.5;
     }
 
     .content blockquote {
@@ -192,6 +194,50 @@
       background: var(--accent-bg);
       padding: 12px 16px;
       border-radius: 0 8px 8px 0;
+    }
+
+    .content hr {
+      border: none;
+      border-top: 1px solid var(--border-color);
+      margin: 28px 0;
+    }
+
+    /* 表格样式支持 */
+    .table-wrap {
+      overflow-x: auto;
+      margin: 20px 0;
+      border-radius: 8px;
+      border: 1px solid var(--border-color);
+    }
+
+    .content table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 14px;
+      text-align: left;
+    }
+
+    .content th {
+      background: var(--card-muted);
+      padding: 10px 14px;
+      font-weight: 600;
+      border-bottom: 1px solid var(--border-color);
+      color: var(--text-main);
+      white-space: nowrap;
+    }
+
+    .content td {
+      padding: 10px 14px;
+      border-bottom: 1px solid var(--border-color);
+      color: var(--text-main);
+    }
+
+    .content tr:last-child td {
+      border-bottom: none;
+    }
+
+    .content tr:hover td {
+      background: rgba(154, 52, 18, 0.03);
     }
 
     /* 正文图片美化 */
@@ -257,7 +303,7 @@
     <main class="article-box">
       <div class="meta-bar">
         <span class="badge" id="post-badge">博文精选</span>
-        <span id="post-date">2026-10-10</span>
+        <span id="post-date">博文归档</span>
         <span>· 作者：T大帅</span>
       </div>
 
@@ -284,13 +330,15 @@
   <script>
     (function loadArticle() {
       const urlParams = new URLSearchParams(window.location.search);
-      const mdFile = urlParams.get('file') || 'README.md';
+      const rawFile = urlParams.get('file') || 'README.md';
 
       // 设置源文件链接
-      document.getElementById('raw-link').href = mdFile;
+      document.getElementById('raw-link').href = rawFile;
 
-      // 动态获取并解析 Markdown
-      fetch(mdFile + '?_t=' + new Date().getTime())
+      // 动态获取并解析 Markdown，安全进行 URL 编码并加入时间戳防缓存
+      const fetchTarget = encodeURI(rawFile) + '?_t=' + new Date().getTime();
+
+      fetch(fetchTarget)
         .then(res => {
           if (!res.ok) throw new Error('HTTP ' + res.status);
           return res.text();
@@ -304,7 +352,7 @@
         })
         .catch(err => {
           document.getElementById('article-content').innerHTML = 
-            '<p style="color: #b91c1c;">⚠️ 文章加载失败：' + err.message + '。请检查文件路径是否正确。</p>';
+            '<p style="color: #b91c1c; padding: 20px; background: #fee2e2; border-radius: 8px;">⚠️ 文章加载失败：' + err.message + '。<br><span style="font-size:13px;color:#7f1d1d;">请确认文件路径：' + escapeHtml(rawFile) + ' 是否存在。</span></p>';
         });
 
       function renderMarkdown(md) {
@@ -314,6 +362,8 @@
         let inCodeBlock = false;
         let codeBlockContent = '';
         let titleFound = false;
+        let inTable = false;
+        let tableHeaderDone = false;
 
         for (let i = 0; i < lines.length; i++) {
           let line = lines[i];
@@ -326,7 +376,7 @@
               codeBlockContent = '';
               inCodeBlock = false;
             } else {
-              if (inList) { html += '</ul>'; inList = false; }
+              closeListAndTable();
               inCodeBlock = true;
             }
             continue;
@@ -336,15 +386,54 @@
             continue;
           }
 
+          // 处理 Markdown 表格 (| col | col |)
+          if (trimmed.startsWith('|') && trimmed.endsWith('|')) {
+            // 分隔线 (| --- | --- |)
+            if (/^\|[\s\-:|]+\|$/.test(trimmed)) {
+              tableHeaderDone = true;
+              continue;
+            }
+            if (!inTable) {
+              closeList();
+              html += '<div class="table-wrap"><table>';
+              inTable = true;
+              tableHeaderDone = false;
+            }
+
+            const cells = trimmed.slice(1, -1).split('|').map(c => c.trim());
+            const tag = tableHeaderDone ? 'td' : 'th';
+            const rowHtml = '<tr>' + cells.map(c => `<${tag}>${formatInline(c)}</${tag}>`).join('') + '</tr>';
+
+            if (!tableHeaderDone) {
+              html += '<thead>' + rowHtml + '</thead><tbody>';
+            } else {
+              html += rowHtml;
+            }
+            continue;
+          } else {
+            if (inTable) {
+              html += '</tbody></table></div>';
+              inTable = false;
+              tableHeaderDone = false;
+            }
+          }
+
+          // 分割线 ---
+          if (trimmed === '---' || trimmed === '***') {
+            closeList();
+            html += '<hr>';
+            continue;
+          }
+
           // 空行处理
           if (!trimmed) {
-            if (inList) { html += '</ul>'; inList = false; }
+            closeList();
             continue;
           }
 
           // 一级标题
           if (trimmed.startsWith('# ')) {
-            if (inList) { html += '</ul>'; inList = false; }
+            closeList();
             const title = trimmed.replace(/^#\s+/, '').trim();
             if (!titleFound) {
               document.getElementById('post-title').innerText = title;
@@ -359,15 +448,22 @@
 
           // 二级标题
           if (trimmed.startsWith('## ')) {
-            if (inList) { html += '</ul>'; inList = false; }
+            closeList();
             html += '<h2>' + formatInline(trimmed.replace(/^##\s+/, '')) + '</h2>';
             continue;
           }
 
           // 三级标题
           if (trimmed.startsWith('### ')) {
-            if (inList) { html += '</ul>'; inList = false; }
+            closeList();
             html += '<h3>' + formatInline(trimmed.replace(/^###\s+/, '')) + '</h3>';
+            continue;
+          }
+
+          // 四级标题
+          if (trimmed.startsWith('#### ')) {
+            closeList();
+            html += '<h4>' + formatInline(trimmed.replace(/^####\s+/, '')) + '</h4>';
             continue;
           }
 
@@ -380,19 +476,26 @@
 
           // 引用块
           if (trimmed.startsWith('> ')) {
-            if (inList) { html += '</ul>'; inList = false; }
+            closeList();
             html += '<blockquote>' + formatInline(trimmed.replace(/^>\s+/, '')) + '</blockquote>';
             continue;
           }
 
           // 普通段落
-          if (inList) { html += '</ul>'; inList = false; }
+          closeList();
           html += '<p>' + formatInline(trimmed) + '</p>';
         }
 
-        if (inList) html += '</ul>';
-
+        closeListAndTable();
         document.getElementById('article-content').innerHTML = html;
+
+        function closeList() {
+          if (inList) { html += '</ul>'; inList = false; }
+        }
+        function closeListAndTable() {
+          if (inList) { html += '</ul>'; inList = false; }
+          if (inTable) { html += '</tbody></table></div>'; inTable = false; }
+        }
       }
 
       function escapeHtml(str) {
@@ -404,19 +507,13 @@
 
       function formatInline(str) {
         return str
-          // 转义基础特殊字符
           .replace(/&/g, '&amp;')
           .replace(/</g, '&lt;')
           .replace(/>/g, '&gt;')
-          // 图片: ![alt](url)
           .replace(/!\[(.*?)\]\((.*?)\)/g, '<img src="$2" alt="$1">')
-          // 链接: [text](url)
           .replace(/\[(.*?)\]\((.*?)\)/g, '<a href="$2" target="_blank" rel="noopener">$1</a>')
-          // 行内代码: `code`
           .replace(/`([^`]+)`/g, '<code>$1</code>')
-          // 粗体: **text**
           .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
-          // 斜体: *text*
           .replace(/\*(.*?)\*/g, '<em>$1</em>');
       }
     })();
