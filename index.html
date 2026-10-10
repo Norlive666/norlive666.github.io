@@ -363,11 +363,19 @@
       gap: 8px;
     }
 
+    /* 下载控制组与线路下拉栏 */
+    .download-group {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      flex-shrink: 0;
+    }
+
     .download-action {
       display: inline-flex;
       align-items: center;
       gap: 6px;
-      padding: 8px 16px;
+      padding: 7px 14px;
       border-radius: 6px;
       background: var(--accent);
       color: #fffdf9;
@@ -376,11 +384,57 @@
       text-decoration: none;
       transition: all 0.2s ease;
       flex-shrink: 0;
+      border: 1px solid var(--accent);
+      white-space: nowrap;
     }
 
     .download-action:hover {
       background: var(--accent-hover);
-      transform: scale(1.02);
+      border-color: var(--accent-hover);
+      transform: translateY(-1px);
+    }
+
+    .channel-select {
+      padding: 6px 24px 6px 10px;
+      border-radius: 6px;
+      border: 1px solid var(--border-color);
+      background-color: var(--card-bg);
+      color: var(--text-muted);
+      font-size: 12px;
+      font-weight: 500;
+      cursor: pointer;
+      outline: none;
+      transition: all 0.2s ease;
+      appearance: none;
+      -webkit-appearance: none;
+      -moz-appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%237d6e63' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 7px center;
+      background-size: 11px;
+    }
+
+    .channel-select:hover {
+      border-color: var(--border-hover);
+      color: var(--text-main);
+    }
+
+    .channel-select:focus {
+      border-color: var(--accent);
+      color: var(--text-main);
+      box-shadow: 0 0 0 2px var(--accent-bg);
+    }
+
+    @media (max-width: 640px) {
+      .resource-card {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 12px;
+      }
+      .download-group {
+        width: 100%;
+        justify-content: flex-end;
+      }
     }
 
     /* 底部关于 */
@@ -538,7 +592,7 @@
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
             公共资源与文件下载
           </div>
-          <div class="section-count">点击即可下载</div>
+          <div class="section-count">国内加速 · 支持线路切换</div>
         </div>
 
         <div class="resource-list">
@@ -557,16 +611,23 @@
                 </div>
               </div>
             </div>
-            <a class="download-action" href="https://github.com/Norlive666/norlive666.github.io/releases/download/v1.0.0/remote-control-v1.3.0.apk" download>
-              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
-              下载
-            </a>
+            <div class="download-group">
+              <a class="download-action" href="https://ghproxy.net/https://github.com/Norlive666/norlive666.github.io/releases/download/v1.0.0/remote-control-v1.3.0.apk" download>
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+                下载
+              </a>
+              <select class="channel-select" title="选择下载线路" onchange="switchDownloadChannel(this)">
+                <option value="https://ghproxy.net/https://github.com/Norlive666/norlive666.github.io/releases/download/v1.0.0/remote-control-v1.3.0.apk">🚀 国内加速通道</option>
+                <option value="https://ghfast.top/https://github.com/Norlive666/norlive666.github.io/releases/download/v1.0.0/remote-control-v1.3.0.apk">⚡ 备用镜像通道</option>
+                <option value="https://github.com/Norlive666/norlive666.github.io/releases/download/v1.0.0/remote-control-v1.3.0.apk">🌐 官方源 (需外网)</option>
+              </select>
+            </div>
           </div>
           <!-- 资源卡片：dsh-testing-setup-windows-x64.exe -->
           <div class="resource-card">
             <div class="resource-left">
               <div class="icon-box">
-                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path><polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline><line x1="12" y1="22.08" x2="12" y2="12"></line></svg>
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 2 0l7-4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path><polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline><line x1="12" y1="22.08" x2="12" y2="12"></line></svg>
               </div>
               <div>
                 <div class="resource-title">dsh-testing-setup-windows-x64.exe</div>
@@ -577,10 +638,17 @@
                 </div>
               </div>
             </div>
-            <a class="download-action" href="https://github.com/Norlive666/norlive666.github.io/releases/download/v1.0.0/dsh-testing-setup-windows-x64.exe" download>
-              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
-              下载
-            </a>
+            <div class="download-group">
+              <a class="download-action" href="https://ghproxy.net/https://github.com/Norlive666/norlive666.github.io/releases/download/v1.0.0/dsh-testing-setup-windows-x64.exe" download>
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+                下载
+              </a>
+              <select class="channel-select" title="选择下载线路" onchange="switchDownloadChannel(this)">
+                <option value="https://ghproxy.net/https://github.com/Norlive666/norlive666.github.io/releases/download/v1.0.0/dsh-testing-setup-windows-x64.exe">🚀 国内加速通道</option>
+                <option value="https://ghfast.top/https://github.com/Norlive666/norlive666.github.io/releases/download/v1.0.0/dsh-testing-setup-windows-x64.exe">⚡ 备用镜像通道</option>
+                <option value="https://github.com/Norlive666/norlive666.github.io/releases/download/v1.0.0/dsh-testing-setup-windows-x64.exe">🌐 官方源 (需外网)</option>
+              </select>
+            </div>
           </div>
         </div>
       </section>
@@ -601,14 +669,31 @@
   <div id="toast">✅ 网站链接已复制到剪贴板！</div>
 
   <script>
+    function showToast(text) {
+      const toast = document.getElementById('toast');
+      if (!toast) return;
+      toast.textContent = text;
+      toast.classList.add('show');
+      setTimeout(() => toast.classList.remove('show'), 2200);
+    }
+
     function copyShareLink() {
       navigator.clipboard.writeText(window.location.href).then(() => {
-        const toast = document.getElementById('toast');
-        toast.classList.add('show');
-        setTimeout(() => toast.classList.remove('show'), 2000);
+        showToast('✅ 网站链接已复制到剪贴板！');
       }).catch(() => {
         alert('主页网址：' + window.location.href);
       });
+    }
+
+    function switchDownloadChannel(selectEl) {
+      const group = selectEl.closest('.download-group');
+      if (!group) return;
+      const btn = group.querySelector('.download-action');
+      if (btn) {
+        btn.href = selectEl.value;
+        const channelName = selectEl.options[selectEl.selectedIndex].text;
+        showToast('已切换至：' + channelName + '，点击【下载】即可');
+      }
     }
   </script>
 </body>

@@ -241,10 +241,17 @@ def add_download_package(file_path_str, desc="实用安装与资源包"):
                 </div>
               </div>
             </div>
-            <a class="download-action" href="{download_url}" download>
-              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
-              下载
-            </a>
+            <div class="download-group">
+              <a class="download-action" href="https://ghproxy.net/{download_url}" download>
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+                下载
+              </a>
+              <select class="channel-select" title="选择下载线路" onchange="switchDownloadChannel(this)">
+                <option value="https://ghproxy.net/{download_url}">🚀 国内加速通道</option>
+                <option value="https://ghfast.top/{download_url}">⚡ 备用镜像通道</option>
+                <option value="{download_url}">🌐 官方源 (需外网)</option>
+              </select>
+            </div>
           </div>"""
 
     marker = '<div class="resource-list">'
