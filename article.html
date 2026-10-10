@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>文章阅读 | T大帅的个人博客</title>
+  <style>
+    :root {
+      --bg-paper: #fbf8f3;
+      --card-bg: #fffdf9;
+      --card-muted: #f6f1e8;
+      --border-color: #e6dfd3;
+      --border-hover: #c4b5a0;
+      --text-main: #2b2520;
+      --text-muted: #796f64;
+      --accent: #9a3412;
+      --accent-hover: #7c2d12;
+      --accent-bg: #fbf3ee;
+      --shadow: 0 4px 20px rgba(78, 62, 45, 0.05);
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", serif;
+      background-color: var(--bg-paper);
+      min-height: 100vh;
+      color: var(--text-main);
+      padding: 40px 20px 60px;
+      line-height: 1.8;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 760px;
+      margin: 0 auto;
+    }
+
+    /* 顶部导航与返回按钮 */
+    .top-nav {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 32px;
+    }
+
+    .back-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      color: var(--accent);
+      text-decoration: none;
+      font-size: 14px;
+      font-weight: 600;
+      padding: 7px 16px;
+      border-radius: 8px;
+      background: var(--card-bg);
+      border: 1px solid var(--border-color);
+      transition: all 0.2s;
+    }
+
+    .back-btn:hover {
+      background: var(--accent);
+      color: #fffdf9;
+      border-color: var(--accent);
+    }
+
+    /* 文章主卡片 */
+    .article-box {
+      background: var(--card-bg);
+      border: 1px solid var(--border-color);
+      border-radius: 20px;
+      padding: 36px 24px;
+      box-shadow: var(--shadow);
+    }
+
+    @media (min-width: 768px) {
+      .article-box {
+        padding: 48px;
+      }
+    }
+
+    .meta-bar {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-size: 13px;
+      color: var(--text-muted);
+      margin-bottom: 16px;
+    }
+
+    .badge {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 4px;
+      background: var(--accent-bg);
+      border: 1px solid #fae4d7;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--accent);
+    }
+
+    .article-header h1 {
+      font-size: 26px;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+      margin-bottom: 24px;
+      line-height: 1.4;
+      font-family: Georgia, "Songti SC", serif;
+      border-bottom: 1px solid var(--border-color);
+      padding-bottom: 20px;
+    }
+
+    /* 正文样式 */
+    .content {
+      font-size: 15px;
+      color: var(--text-main);
+    }
+
+    .content h1 {
+      font-size: 22px;
+      font-weight: 700;
+      margin: 32px 0 16px;
+      font-family: Georgia, "Songti SC", serif;
+      color: var(--text-main);
+      border-left: 3px solid var(--accent);
+      padding-left: 10px;
+    }
+
+    .content h2 {
+      font-size: 19px;
+      font-weight: 700;
+      margin: 28px 0 14px;
+      font-family: Georgia, "Songti SC", serif;
+      color: var(--text-main);
+      border-left: 3px solid var(--accent);
+      padding-left: 10px;
+    }
+
+    .content h3 {
+      font-size: 16px;
+      font-weight: 600;
+      margin: 22px 0 10px;
+    }
+
+    .content p {
+      margin-bottom: 16px;
+    }
+
+    .content ul, .content ol {
+      margin: 0 0 16px 24px;
+    }
+
+    .content li {
+      margin-bottom: 8px;
+    }
+
+    .content a {
+      color: var(--accent);
+      text-decoration: underline;
+      font-weight: 500;
+    }
+
+    .content a:hover {
+      color: var(--accent-hover);
+    }
+
+    .content code {
+      background: var(--card-muted);
+      border: 1px solid var(--border-color);
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-size: 13px;
+      font-family: monospace;
+      color: var(--accent);
+    }
+
+    .content pre {
+      background: var(--card-muted);
+      border: 1px solid var(--border-color);
+      padding: 16px;
+      border-radius: 8px;
+      overflow-x: auto;
+      margin-bottom: 18px;
+    }
+
+    .content blockquote {
+      border-left: 3px solid var(--accent);
+      padding-left: 16px;
+      color: var(--text-muted);
+      margin: 18px 0;
+      background: var(--accent-bg);
+      padding: 12px 16px;
+      border-radius: 0 8px 8px 0;
+    }
+
+    /* 正文图片美化 */
+    .content img {
+      max-width: 100%;
+      height: auto;
+      display: block;
+      margin: 20px auto;
+      border-radius: 10px;
+      border: 1px solid var(--border-color);
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+    }
+
+    .source-raw-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 13px;
+      color: var(--accent);
+      text-decoration: none;
+      font-weight: 600;
+      margin-top: 24px;
+      padding: 7px 14px;
+      border-radius: 6px;
+      background: var(--card-muted);
+      border: 1px solid var(--border-color);
+      transition: background 0.2s;
+    }
+
+    .source-raw-btn:hover {
+      background: #eee8dc;
+    }
+
+    .loading-spinner {
+      text-align: center;
+      padding: 40px 0;
+      color: var(--text-muted);
+      font-size: 14px;
+    }
+
+    /* 页脚 */
+    footer {
+      text-align: center;
+      font-size: 12px;
+      color: var(--text-muted);
+      margin-top: 40px;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <!-- 顶部导航 -->
+    <nav class="top-nav">
+      <a class="back-btn" href="index.html">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+        返回首页
+      </a>
+      <span style="font-size: 13px; color: var(--text-muted);">T大帅的个人博客</span>
+    </nav>
+
+    <!-- 文章正文 -->
+    <main class="article-box">
+      <div class="meta-bar">
+        <span class="badge" id="post-badge">博文精选</span>
+        <span id="post-date">2026-10-10</span>
+        <span>· 作者：T大帅</span>
+      </div>
+
+      <header class="article-header">
+        <h1 id="post-title">正在加载文章内容...</h1>
+      </header>
+
+      <div class="content" id="article-content">
+        <div class="loading-spinner">⏳ 正在读取 Markdown 文章，请稍候...</div>
+      </div>
+
+      <div style="border-top: 1px solid var(--border-color); margin-top: 36px; padding-top: 20px;">
+        <a class="source-raw-btn" id="raw-link" href="#" target="_blank">
+          📄 查看原始 Markdown 源文件
+        </a>
+      </div>
+    </main>
+
+    <footer>
+      <p>© 2026 T大帅 · 基于 GitHub Pages 构建</p>
+    </footer>
+  </div>
+
+  <script>
+    (function loadArticle() {
+      const urlParams = new URLSearchParams(window.location.search);
+      const mdFile = urlParams.get('file') || 'README.md';
+
+      // 设置源文件链接
+      document.getElementById('raw-link').href = mdFile;
+
+      // 动态获取并解析 Markdown
+      fetch(mdFile + '?_t=' + new Date().getTime())
+        .then(res => {
+          if (!res.ok) throw new Error('HTTP ' + res.status);
+          return res.text();
+        })
+        .then(mdText => {
+          if (!mdText || mdText.trim().length === 0) {
+            document.getElementById('article-content').innerHTML = '<p>文章内容为空。</p>';
+            return;
+          }
+          renderMarkdown(mdText);
+        })
+        .catch(err => {
+          document.getElementById('article-content').innerHTML = 
+            '<p style="color: #b91c1c;">⚠️ 文章加载失败：' + err.message + '。请检查文件路径是否正确。</p>';
+        });
+
+      function renderMarkdown(md) {
+        const lines = md.split('\n');
+        let html = '';
+        let inList = false;
+        let inCodeBlock = false;
+        let codeBlockContent = '';
+        let titleFound = false;
+
+        for (let i = 0; i < lines.length; i++) {
+          let line = lines[i];
+          let trimmed = line.trim();
+
+          // 处理代码块 ```
+          if (trimmed.startsWith('```')) {
+            if (inCodeBlock) {
+              html += '<pre><code>' + escapeHtml(codeBlockContent.trimEnd()) + '</code></pre>';
+              codeBlockContent = '';
+              inCodeBlock = false;
+            } else {
+              if (inList) { html += '</ul>'; inList = false; }
+              inCodeBlock = true;
+            }
+            continue;
+          }
+          if (inCodeBlock) {
+            codeBlockContent += line + '\n';
+            continue;
+          }
+
+          // 空行处理
+          if (!trimmed) {
+            if (inList) { html += '</ul>'; inList = false; }
+            continue;
+          }
+
+          // 一级标题
+          if (trimmed.startsWith('# ')) {
+            if (inList) { html += '</ul>'; inList = false; }
+            const title = trimmed.replace(/^#\s+/, '').trim();
+            if (!titleFound) {
+              document.getElementById('post-title').innerText = title;
+              document.title = title + ' | T大帅';
+              titleFound = true;
+              continue;
+            } else {
+              html += '<h1>' + formatInline(title) + '</h1>';
+              continue;
+            }
+          }
+
+          // 二级标题
+          if (trimmed.startsWith('## ')) {
+            if (inList) { html += '</ul>'; inList = false; }
+            html += '<h2>' + formatInline(trimmed.replace(/^##\s+/, '')) + '</h2>';
+            continue;
+          }
+
+          // 三级标题
+          if (trimmed.startsWith('### ')) {
+            if (inList) { html += '</ul>'; inList = false; }
+            html += '<h3>' + formatInline(trimmed.replace(/^###\s+/, '')) + '</h3>';
+            continue;
+          }
+
+          // 列表项
+          if (trimmed.startsWith('- ') || trimmed.startsWith('* ')) {
+            if (!inList) { html += '<ul>'; inList = true; }
+            html += '<li>' + formatInline(trimmed.replace(/^[-*]\s+/, '')) + '</li>';
+            continue;
+          }
+
+          // 引用块
+          if (trimmed.startsWith('> ')) {
+            if (inList) { html += '</ul>'; inList = false; }
+            html += '<blockquote>' + formatInline(trimmed.replace(/^>\s+/, '')) + '</blockquote>';
+            continue;
+          }
+
+          // 普通段落
+          if (inList) { html += '</ul>'; inList = false; }
+          html += '<p>' + formatInline(trimmed) + '</p>';
+        }
+
+        if (inList) html += '</ul>';
+
+        document.getElementById('article-content').innerHTML = html;
+      }
+
+      function escapeHtml(str) {
+        return str
+          .replace(/&/g, '&amp;')
+          .replace(/</g, '&lt;')
+          .replace(/>/g, '&gt;');
+      }
+
+      function formatInline(str) {
+        return str
+          // 转义基础特殊字符
+          .replace(/&/g, '&amp;')
+          .replace(/</g, '&lt;')
+          .replace(/>/g, '&gt;')
+          // 图片: ![alt](url)
+          .replace(/!\[(.*?)\]\((.*?)\)/g, '<img src="$2" alt="$1">')
+          // 链接: [text](url)
+          .replace(/\[(.*?)\]\((.*?)\)/g, '<a href="$2" target="_blank" rel="noopener">$1</a>')
+          // 行内代码: `code`
+          .replace(/`([^`]+)`/g, '<code>$1</code>')
+          // 粗体: **text**
+          .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+          // 斜体: *text*
+          .replace(/\*(.*?)\*/g, '<em>$1</em>');
+      }
+    })();
+  </script>
+</body>
+</html>
