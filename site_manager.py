@@ -13,6 +13,7 @@ import os
 import sys
 import re
 import json
+import time
 import shutil
 import subprocess
 from datetime import datetime
@@ -57,7 +58,7 @@ def get_gh_token():
 
 
 def git_push_with_retry(max_retries=3):
-    """带 token 和重试机制的安全推送"""
+    """带 token、自动合并远程最新提交与重试机制的安全推送"""
     token = get_gh_token()
     if not token:
         print("⚠️ 尝试使用常规 git push...")
@@ -65,18 +66,42 @@ def git_push_with_retry(max_retries=3):
 
     push_url = f"https://{token}@github.com/{REPO_OWNER_NAME}.git"
     print("🚀 正在推送到 GitHub，请稍候...")
+
+    # 推送前自动拉取并变基远程最新提交（如在 GitHub 网页端编辑了文件）
+    subprocess.run(
+        f'git pull --rebase "{push_url}" main',
+        shell=True,
+        cwd=str(REPO_DIR),
+        capture_output=True
+    )
+
     for i in range(1, max_retries + 1):
         try:
-            subprocess.run(
+            res = subprocess.run(
                 f'git push "{push_url}" main',
                 shell=True,
                 cwd=str(REPO_DIR),
-                check=True
+                capture_output=True,
+                text=True
             )
-            print("✅ 成功推送到 GitHub main 分支！约 30 秒后网站自动生效。")
-            return True
-        except subprocess.CalledProcessError:
-            print(f"⚠️ 推送出现网络波动，第 {i}/{max_retries} 次重试中...")
+            if res.returncode == 0:
+                print("✅ 成功推送到 GitHub main 分支！约 30 秒后网站自动生效。")
+                return True
+            else:
+                # 若因落后远程提交被拒绝，再次自动拉取变基
+                if "fetch first" in res.stderr or "rejected" in res.stderr:
+                    subprocess.run(
+                        f'git pull --rebase "{push_url}" main',
+                        shell=True,
+                        cwd=str(REPO_DIR),
+                        capture_output=True
+                    )
+                print(f"⚠️ 推送出现网络波动或等待合并，第 {i}/{max_retries} 次重试中...")
+                time.sleep(1)
+        except Exception:
+            print(f"⚠️ 推送过程异常，第 {i}/{max_retries} 次重试中...")
+            time.sleep(1)
+
     print("❌ 推送失败，请检查网络连接后重试。")
     return False
 
@@ -84,16 +109,18 @@ def git_push_with_retry(max_retries=3):
 def quick_sync(commit_msg=None):
     """一键提交并推送当前工作区"""
     status = run_cmd("git status --porcelain")
-    if not status:
-        print("ℹ️ 工作区干净，没有需要提交的变动。")
+    unpushed = run_cmd("git log @{u}..HEAD --oneline", check=False)
+    if not status and not unpushed:
+        print("ℹ️ 工作区干净且已与远程同步，没有需要提交的变动。")
         return
 
-    if not commit_msg:
-        commit_msg = f"chore: update website at {datetime.now().strftime('%Y-%m-%d %H:%M')}"
+    if status:
+        if not commit_msg:
+            commit_msg = f"chore: update website at {datetime.now().strftime('%Y-%m-%d %H:%M')}"
+        print(f"📦 正在暂存并提交变更: {commit_msg}")
+        run_cmd("git add -A")
+        run_cmd(f'git commit -m "{commit_msg}"')
 
-    print(f"📦 正在暂存并提交变更: {commit_msg}")
-    run_cmd("git add -A")
-    run_cmd(f'git commit -m "{commit_msg}"')
     git_push_with_retry()
 
 
@@ -127,10 +154,17 @@ def add_blog_post(md_path_str, category="随笔分享"):
 
     # 复制文件
     shutil.copy2(src_file, target_file)
-    print(f"📄 已复制文章到: posts/{target_file.name}")
+    print(f"📄 已更新文章文件: posts/{target_file.name}")
 
     # 读取并修改 index.html
     html_content = INDEX_FILE.read_text(encoding="utf-8")
+    target_link = f"article.html?file=posts/{target_file.name}"
+
+    if target_link in html_content:
+        print(f"ℹ️ 文章《{title}》在主页列表中已存在，已更新文件内容并同步！")
+        quick_sync(f"update: update blog post '{title}'")
+        return
+
     today = datetime.now().strftime("%Y-%m-%d")
 
     # 构建文章卡片
