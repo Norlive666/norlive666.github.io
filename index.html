@@ -83,10 +83,10 @@
     }
     .masthead-meta b { color: var(--ink); font-weight: 600; }
 
-    /* ── 主栅格：文章 + 右侧资料栏 ── */
+    /* ── 主栅格：左侧资料栏 + 右侧文章 ── */
     .grid { display: grid; grid-template-columns: 1fr; gap: 52px; padding-top: 42px; }
     @media (min-width: 940px) {
-      .grid { grid-template-columns: minmax(0, 1fr) 300px; gap: 0 56px; }
+      .grid { grid-template-columns: 300px minmax(0, 1fr); gap: 0 56px; }
       .side { position: sticky; top: 84px; align-self: start; }
     }
     #articles, #resources, #about { scroll-margin-top: 84px; }
@@ -235,78 +235,7 @@
 
     <main class="grid">
 
-      <!-- 左：博客文章 -->
-      <section id="articles">
-        <div class="sec-head">
-          <h2>最新博客文章</h2>
-          <div class="section-count">共 6 篇</div>
-        </div>
-        <!-- 文章列表：site_manager.py 会在此容器内插入新卡片 -->
-        <div class="article-list">
-          <!-- 博客文章：电脑休眠问题 -->
-          <a class="article-card" href="article.html?file=posts/linux下电脑休眠卡死问题.md">
-            <div class="article-meta">
-              <span class="badge">随笔分享</span>
-              <time>2026-10-14</time>
-              <span style="margin-left: auto; color: var(--accent); font-size: 11px; font-weight: 600;">点击阅读全文 →</span>
-            </div>
-            <h2 class="article-title">电脑休眠问题</h2>
-            <p class="article-summary">电脑合上屏幕后进入休眠，再次打开屏幕时，系统可能卡死在锁屏界面，无法正常操作，只能强制重启。</p>
-          </a>
-          <!-- 博客文章：GNOME 实用扩展推荐 -->
-          <a class="article-card" href="article.html?file=posts/GNOME实用扩展.md">
-            <div class="article-meta">
-              <span class="badge">随笔分享</span>
-              <time>2026-10-11</time>
-              <span style="margin-left: auto; color: var(--accent); font-size: 11px; font-weight: 600;">点击阅读全文 →</span>
-            </div>
-            <h2 class="article-title">GNOME 实用扩展推荐</h2>
-            <p class="article-summary">推荐、顺便记录一下本人使用的gnome拓展，可以极大的美观、简化桌面，提高便捷性。</p>
-          </a>
-          <!-- 博客文章： 个人网站一键管理与发布脚本（update.sh）使用指南 -->
-          <a class="article-card" href="article.html?file=posts/网站一键管理脚本使用说明.md">
-            <div class="article-meta">
-              <span class="badge">配置分享</span>
-              <time>2026-10-10</time>
-              <span style="margin-left: auto; color: var(--accent); font-size: 11px; font-weight: 600;">点击阅读全文 →</span>
-            </div>
-            <h2 class="article-title"> 个人网站一键管理与发布脚本（update.sh）使用指南</h2>
-            <p class="article-summary">本文档介绍针对个人主页及博客系统量身打造的 **全自动管理脚本（`update.sh` / `site_manager.py`）** 的核心功能，以及如何将其无缝配置到 `~/下载...</p>
-          </a>
-          <!-- 博客文章 1：DSH 懒人整合包使用说明 -->
-          <a class="article-card" href="article.html?file=posts/dsh-guide.md">
-            <div class="article-meta">
-              <span class="badge">使用说明</span>
-              <time>2026-10-10</time>
-              <span style="margin-left: auto; color: var(--accent); font-size: 11px; font-weight: 600;">点击阅读全文 →</span>
-            </div>
-            <h2 class="article-title">DSH 懒人整合包的使用说明</h2>
-            <p class="article-summary">在官方 harness 基础上添加了悬浮窗、插件市场、快速 API 设置等高效插件，并集成完整运行环境，实现开箱即用效果...</p>
-          </a>
-           <!-- 博客文章 2：vim快捷键配置说明 -->
-          <a class="article-card" href="article.html?file=posts/VSCode-Vim快捷键配置记录.md">
-            <div class="article-meta">
-              <span class="badge">配置分享</span>
-              <time>2026-09-20</time>
-              <span style="margin-left: auto; color: var(--accent); font-size: 11px; font-weight: 600;">点击阅读全文 →</span>
-            </div>
-            <h2 class="article-title">VSCode-Vim快捷键配置记录</h2>
-            <p class="article-summary">在 VSCode 里装了 VSCodeVim 扩展，需要一套「常用、好用」的快捷键。本文件记录这次改了哪些地方...</p>
-          </a>
-
-          <!-- 博客文章 3：README 说明 -->
-          <a class="article-card" href="article.html?file=README.md">
-            <div class="article-meta">
-              <span class="badge">项目说明</span>
-              <time>2026-10-09</time>
-              <span style="margin-left: auto; color: var(--accent); font-size: 11px; font-weight: 600;">点击阅读全文 →</span>
-            </div>
-            <h2 class="article-title">个人博客网站项目 (README)</h2>
-            <p class="article-summary">这是一个由 AI 辅助搭建的个人博客页面。我将在这里分享我个人的学习心得，以及我个人应用的下载包。希望通过该网站以更简单直接的方式分享好用的工具...</p>
-          </a></div>
-      </section>
-
-      <!-- 右：资料 / 资源下载 / 关于 -->
+      <!-- 左：资料 / 资源下载 / 关于 -->
       <aside class="side">
 
         <div class="profile">
@@ -422,6 +351,78 @@
         </div>
 
       </aside>
+
+      <!-- 右：博客文章 -->
+      <section id="articles">
+        <div class="sec-head">
+          <h2>最新博客文章</h2>
+          <div class="section-count">共 6 篇</div>
+        </div>
+        <!-- 文章列表：site_manager.py 会在此容器内插入新卡片 -->
+        <div class="article-list">
+          <!-- 博客文章：电脑休眠问题 -->
+          <a class="article-card" href="article.html?file=posts/linux下电脑休眠卡死问题.md">
+            <div class="article-meta">
+              <span class="badge">随笔分享</span>
+              <time>2026-10-14</time>
+              <span style="margin-left: auto; color: var(--accent); font-size: 11px; font-weight: 600;">点击阅读全文 →</span>
+            </div>
+            <h2 class="article-title">电脑休眠问题</h2>
+            <p class="article-summary">电脑合上屏幕后进入休眠，再次打开屏幕时，系统可能卡死在锁屏界面，无法正常操作，只能强制重启。</p>
+          </a>
+          <!-- 博客文章：GNOME 实用扩展推荐 -->
+          <a class="article-card" href="article.html?file=posts/GNOME实用扩展.md">
+            <div class="article-meta">
+              <span class="badge">随笔分享</span>
+              <time>2026-10-11</time>
+              <span style="margin-left: auto; color: var(--accent); font-size: 11px; font-weight: 600;">点击阅读全文 →</span>
+            </div>
+            <h2 class="article-title">GNOME 实用扩展推荐</h2>
+            <p class="article-summary">推荐、顺便记录一下本人使用的gnome拓展，可以极大的美观、简化桌面，提高便捷性。</p>
+          </a>
+          <!-- 博客文章： 个人网站一键管理与发布脚本（update.sh）使用指南 -->
+          <a class="article-card" href="article.html?file=posts/网站一键管理脚本使用说明.md">
+            <div class="article-meta">
+              <span class="badge">配置分享</span>
+              <time>2026-10-10</time>
+              <span style="margin-left: auto; color: var(--accent); font-size: 11px; font-weight: 600;">点击阅读全文 →</span>
+            </div>
+            <h2 class="article-title"> 个人网站一键管理与发布脚本（update.sh）使用指南</h2>
+            <p class="article-summary">本文档介绍针对个人主页及博客系统量身打造的 **全自动管理脚本（`update.sh` / `site_manager.py`）** 的核心功能，以及如何将其无缝配置到 `~/下载...</p>
+          </a>
+          <!-- 博客文章 1：DSH 懒人整合包使用说明 -->
+          <a class="article-card" href="article.html?file=posts/dsh-guide.md">
+            <div class="article-meta">
+              <span class="badge">使用说明</span>
+              <time>2026-10-10</time>
+              <span style="margin-left: auto; color: var(--accent); font-size: 11px; font-weight: 600;">点击阅读全文 →</span>
+            </div>
+            <h2 class="article-title">DSH 懒人整合包的使用说明</h2>
+            <p class="article-summary">在官方 harness 基础上添加了悬浮窗、插件市场、快速 API 设置等高效插件，并集成完整运行环境，实现开箱即用效果...</p>
+          </a>
+           <!-- 博客文章 2：vim快捷键配置说明 -->
+          <a class="article-card" href="article.html?file=posts/VSCode-Vim快捷键配置记录.md">
+            <div class="article-meta">
+              <span class="badge">配置分享</span>
+              <time>2026-09-20</time>
+              <span style="margin-left: auto; color: var(--accent); font-size: 11px; font-weight: 600;">点击阅读全文 →</span>
+            </div>
+            <h2 class="article-title">VSCode-Vim快捷键配置记录</h2>
+            <p class="article-summary">在 VSCode 里装了 VSCodeVim 扩展，需要一套「常用、好用」的快捷键。本文件记录这次改了哪些地方...</p>
+          </a>
+
+          <!-- 博客文章 3：README 说明 -->
+          <a class="article-card" href="article.html?file=README.md">
+            <div class="article-meta">
+              <span class="badge">项目说明</span>
+              <time>2026-10-09</time>
+              <span style="margin-left: auto; color: var(--accent); font-size: 11px; font-weight: 600;">点击阅读全文 →</span>
+            </div>
+            <h2 class="article-title">个人博客网站项目 (README)</h2>
+            <p class="article-summary">这是一个由 AI 辅助搭建的个人博客页面。我将在这里分享我个人的学习心得，以及我个人应用的下载包。希望通过该网站以更简单直接的方式分享好用的工具...</p>
+          </a></div>
+      </section>
+
 
     </main>
 
