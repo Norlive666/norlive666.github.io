@@ -6,314 +6,145 @@
   <title>文章阅读 | T大帅的个人博客</title>
   <style>
     :root {
-      --bg-paper: #fbf8f3;
-      --card-bg: #fffdf9;
-      --card-muted: #f6f1e8;
-      --border-color: #e6dfd3;
-      --border-hover: #c4b5a0;
-      --text-main: #2b2520;
-      --text-muted: #796f64;
-      --accent: #9a3412;
-      --accent-hover: #7c2d12;
-      --accent-bg: #fbf3ee;
-      --shadow: 0 4px 20px rgba(78, 62, 45, 0.05);
+      --bg: #ffffff;
+      --bg-soft: #fafafa;
+      --ink: #111111;
+      --ink-soft: #555555;
+      --muted: #8a8a8a;
+      --line: #e8e8e8;
+      --accent: #d92b2b;
+      --accent-soft: #fdf2f2;
+      /* 兼容模板内联样式里的旧变量 */
+      --text-main: var(--ink);
+      --text-muted: var(--muted);
+      --border-color: var(--line);
+      --sans: "Inter", "Helvetica Neue", -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Noto Sans CJK SC", "Microsoft YaHei", sans-serif;
+      --serif: "Noto Serif CJK SC", "Songti SC", Georgia, "Times New Roman", serif;
+      --mono: ui-monospace, SFMono-Regular, Menlo, "JetBrains Mono", "Noto Sans Mono CJK SC", monospace;
     }
 
-    * { margin: 0; padding: 0; box-sizing: border-box; }
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+    ::selection { background: var(--ink); color: #fff; }
 
     body {
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", serif;
-      background-color: var(--bg-paper);
-      min-height: 100vh;
-      color: var(--text-main);
-      padding: 40px 20px 60px;
-      line-height: 1.8;
+      font-family: var(--sans);
+      background: var(--bg);
+      color: var(--ink);
+      line-height: 1.7;
+      padding: 0 22px 64px;
+      -webkit-font-smoothing: antialiased;
     }
+    a { color: inherit; text-decoration: none; }
 
-    .container {
-      width: 100%;
-      max-width: 800px;
-      margin: 0 auto;
-    }
+    .container { width: 100%; max-width: 760px; margin: 0 auto; }
 
-    /* 顶部导航与返回按钮 */
+    /* ── 顶部导航 ── */
     .top-nav {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      margin-bottom: 32px;
+      position: sticky; top: 0; z-index: 30;
+      display: flex; align-items: center; justify-content: space-between; gap: 14px;
+      padding: 14px 0; margin-bottom: 8px;
+      background: rgba(255, 255, 255, 0.92); backdrop-filter: blur(10px);
+      border-bottom: 1px solid var(--line);
+      font-size: 12px; color: var(--muted);
     }
-
     .back-btn {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      color: var(--accent);
-      text-decoration: none;
-      font-size: 14px;
-      font-weight: 600;
-      padding: 7px 16px;
-      border-radius: 8px;
-      background: var(--card-bg);
-      border: 1px solid var(--border-color);
-      transition: all 0.2s;
+      display: inline-flex; align-items: center; gap: 7px;
+      font-family: var(--mono); font-size: 11px; letter-spacing: 0.06em; color: var(--ink);
+      padding: 5px 0; border-bottom: 1px solid transparent; transition: 0.18s ease;
     }
+    .back-btn:hover { color: var(--accent); border-bottom-color: var(--accent); }
+    .top-nav span[style] { font-family: var(--mono) !important; font-size: 10px !important; letter-spacing: 0.08em !important; }
 
-    .back-btn:hover {
-      background: var(--accent);
-      color: #fffdf9;
-      border-color: var(--accent);
-    }
-
-    /* 文章主卡片 */
-    .article-box {
-      background: var(--card-bg);
-      border: 1px solid var(--border-color);
-      border-radius: 20px;
-      padding: 36px 24px;
-      box-shadow: var(--shadow);
-      word-break: break-word;
-      overflow-wrap: anywhere;
-      box-sizing: border-box;
-    }
-
-    @media (min-width: 768px) {
-      .article-box {
-        padding: 48px;
-      }
-    }
-
+    /* ── 文章头 ── */
+    .article-box { padding: 34px 0 0; }
     .meta-bar {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      font-size: 13px;
-      color: var(--text-muted);
-      margin-bottom: 16px;
+      display: flex; align-items: center; flex-wrap: wrap; gap: 10px;
+      font-family: var(--mono); font-size: 10px; letter-spacing: 0.08em; color: var(--muted);
     }
-
     .badge {
-      display: inline-block;
-      padding: 2px 8px;
-      border-radius: 4px;
-      background: var(--accent-bg);
-      border: 1px solid #fae4d7;
-      font-size: 12px;
-      font-weight: 600;
-      color: var(--accent);
+      font-family: var(--mono); font-size: 10px; letter-spacing: 0.12em; color: var(--accent);
+      text-transform: uppercase;
     }
-
+    .article-header { padding: 16px 0 26px; border-bottom: 1px solid var(--ink); margin-bottom: 30px; }
     .article-header h1 {
-      font-size: 26px;
-      font-weight: 700;
-      letter-spacing: 0.5px;
-      margin-bottom: 24px;
-      line-height: 1.4;
-      font-family: Georgia, "Songti SC", serif;
-      border-bottom: 1px solid var(--border-color);
-      padding-bottom: 20px;
+      font-size: clamp(26px, 3.8vw, 38px);
+      line-height: 1.24; letter-spacing: -0.03em; font-weight: 800;
     }
 
-    /* 正文样式 */
-    .content {
-      font-size: 15px;
-      color: var(--text-main);
-      word-break: break-word;
-      overflow-wrap: anywhere;
+    /* ── 正文排版 ── */
+    .content { font-family: var(--serif); font-size: 16px; line-height: 1.95; color: #333333; }
+    .content h1, .content h2, .content h3 {
+      font-family: var(--sans); font-weight: 700; letter-spacing: -0.015em; color: var(--ink);
+      line-height: 1.4; scroll-margin-top: 80px;
     }
-
-    .content h1 {
-      font-size: 22px;
-      font-weight: 700;
-      margin: 32px 0 16px;
-      font-family: Georgia, "Songti SC", serif;
-      color: var(--text-main);
-      border-left: 3px solid var(--accent);
-      padding-left: 10px;
-    }
-
+    .content h1 { font-size: 24px; margin: 40px 0 14px; }
     .content h2 {
-      font-size: 19px;
-      font-weight: 700;
-      margin: 28px 0 14px;
-      font-family: Georgia, "Songti SC", serif;
-      color: var(--text-main);
+      font-size: 20px; margin: 40px 0 14px; padding-left: 12px;
       border-left: 3px solid var(--accent);
-      padding-left: 10px;
     }
-
-    .content h3 {
-      font-size: 16px;
-      font-weight: 600;
-      margin: 22px 0 10px;
-    }
-
-    .content p {
-      margin-bottom: 16px;
-      word-break: break-word;
-      overflow-wrap: anywhere;
-    }
-
-    .content ul, .content ol {
-      margin: 0 0 16px 24px;
-    }
-
-    .content li {
-      margin-bottom: 8px;
-      word-break: break-word;
-      overflow-wrap: anywhere;
-    }
-
+    .content h3 { font-size: 16.5px; margin: 30px 0 10px; }
+    .content p { margin: 0 0 18px; }
+    .content ul, .content ol { margin: 0 0 18px; padding-left: 1.4em; }
+    .content li { margin-bottom: 7px; }
+    .content li::marker { color: var(--accent); }
     .content a {
-      color: var(--accent);
-      text-decoration: underline;
-      font-weight: 500;
+      color: var(--ink); border-bottom: 1px solid var(--accent);
+      padding-bottom: 1px; transition: 0.18s ease;
     }
-
-    .content a:hover {
-      color: var(--accent-hover);
-    }
-
+    .content a:hover { color: var(--accent); }
+    .content strong { font-weight: 700; color: var(--ink); }
     .content code {
-      background: var(--card-muted);
-      border: 1px solid var(--border-color);
-      padding: 2px 6px;
-      border-radius: 4px;
-      font-size: 13px;
-      font-family: monospace;
-      color: var(--accent);
-      word-break: break-word;
-      overflow-wrap: anywhere;
-      white-space: normal;
-      display: inline-block;
-      vertical-align: baseline;
-      margin: 1px 2px;
+      font-family: var(--mono); font-size: 0.86em; letter-spacing: -0.01em;
+      background: #f5f5f5; border: 1px solid #ececec; border-radius: 2px;
+      padding: 1px 5px; color: #b32d2d;
     }
-
     .content pre {
-      background: var(--card-muted);
-      border: 1px solid var(--border-color);
-      padding: 16px;
-      border-radius: 8px;
-      overflow-x: auto;
-      margin-bottom: 18px;
-      font-size: 13px;
-      line-height: 1.5;
-      max-width: 100%;
-      box-sizing: border-box;
+      background: #111111; border-radius: 2px; padding: 16px 18px;
+      overflow-x: auto; margin: 0 0 20px; line-height: 1.7;
+      font-family: var(--mono); font-size: 12.5px; color: #e6e6e6;
     }
-
-    .content pre code {
-      background: none;
-      border: none;
-      padding: 0;
-      color: inherit;
-      white-space: pre;
-      word-break: normal;
-      overflow-wrap: normal;
-      display: block;
-      margin: 0;
-    }
-
+    .content pre code { background: none; border: 0; padding: 0; color: inherit; font-size: inherit; }
     .content blockquote {
-      border-left: 3px solid var(--accent);
-      padding-left: 16px;
-      color: var(--text-muted);
-      margin: 18px 0;
-      background: var(--accent-bg);
-      padding: 12px 16px;
-      border-radius: 0 8px 8px 0;
+      margin: 0 0 20px; padding: 12px 16px;
+      border-left: 2px solid var(--accent); background: var(--bg-soft);
+      font-size: 14.5px; color: var(--ink-soft);
     }
-
-    .content hr {
-      border: none;
-      border-top: 1px solid var(--border-color);
-      margin: 28px 0;
-    }
-
-    /* 表格样式支持 */
-    .table-wrap {
-      overflow-x: auto;
-      margin: 20px 0;
-      border-radius: 8px;
-      border: 1px solid var(--border-color);
-    }
-
-    .content table {
-      width: 100%;
-      border-collapse: collapse;
-      font-size: 14px;
-      text-align: left;
-    }
-
+    .content blockquote p:last-child { margin-bottom: 0; }
+    .content hr { border: 0; border-top: 1px solid var(--line); margin: 32px 0; }
+    .table-wrap { overflow-x: auto; margin: 0 0 20px; }
+    .content table { width: 100%; border-collapse: collapse; font-family: var(--sans); font-size: 13px; }
     .content th {
-      background: var(--card-muted);
-      padding: 10px 14px;
-      font-weight: 600;
-      border-bottom: 1px solid var(--border-color);
-      color: var(--text-main);
-      white-space: nowrap;
+      text-align: left; font-family: var(--mono); font-size: 10px; letter-spacing: 0.1em;
+      text-transform: uppercase; color: var(--ink);
+      background: var(--bg-soft); border-bottom: 1px solid var(--ink); padding: 9px 11px;
     }
-
-    .content td {
-      padding: 10px 14px;
-      border-bottom: 1px solid var(--border-color);
-      color: var(--text-main);
-    }
-
-    .content tr:last-child td {
-      border-bottom: none;
-    }
-
-    .content tr:hover td {
-      background: rgba(154, 52, 18, 0.03);
-    }
-
-    /* 正文图片美化 */
+    .content td { border-bottom: 1px solid var(--line); padding: 9px 11px; color: var(--ink-soft); }
+    .content tr:last-child td { border-bottom: 1px solid var(--ink); }
+    .content tr:hover td { background: #fcfcfc; }
     .content img {
-      max-width: 100%;
-      height: auto;
-      display: block;
-      margin: 20px auto;
-      border-radius: 10px;
-      border: 1px solid var(--border-color);
-      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+      max-width: 100%; height: auto; display: block; margin: 6px 0 20px;
+      border: 1px solid var(--line); border-radius: 2px;
     }
 
+    /* ── 源文件链接 ── */
     .source-raw-btn {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      font-size: 13px;
-      color: var(--accent);
-      text-decoration: none;
-      font-weight: 600;
-      margin-top: 24px;
-      padding: 7px 14px;
-      border-radius: 6px;
-      background: var(--card-muted);
-      border: 1px solid var(--border-color);
-      transition: background 0.2s;
+      display: inline-flex; align-items: center; gap: 7px;
+      font-family: var(--mono); font-size: 11px; letter-spacing: 0.06em; color: var(--ink-soft);
+      border: 1px solid var(--line); border-radius: 2px; padding: 8px 13px; transition: 0.2s ease;
     }
-
-    .source-raw-btn:hover {
-      background: #eee8dc;
-    }
+    .source-raw-btn:hover { border-color: var(--ink); color: var(--ink); }
 
     .loading-spinner {
-      text-align: center;
-      padding: 40px 0;
-      color: var(--text-muted);
-      font-size: 14px;
+      font-family: var(--mono); font-size: 12px; letter-spacing: 0.06em; color: var(--muted);
+      padding: 30px 0;
     }
 
-    /* 页脚 */
     footer {
-      text-align: center;
-      font-size: 12px;
-      color: var(--text-muted);
-      margin-top: 40px;
+      margin-top: 46px; padding-top: 16px; border-top: 1px solid var(--ink);
+      font-family: var(--mono); font-size: 10px; letter-spacing: 0.07em; color: var(--muted);
     }
+
+    @media (min-width: 900px) { body { padding: 0 32px 80px; } }
   </style>
 </head>
 <body>
