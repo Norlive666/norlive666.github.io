@@ -57,6 +57,17 @@ def get_gh_token():
     return None
 
 
+def sync_from_remote():
+    """在执行操作前自动同步远程最新提交，避免本地代码落后导致冲突"""
+    token = get_gh_token()
+    if not token:
+        return
+    push_url = f"https://{token}@github.com/{REPO_OWNER_NAME}.git"
+    status = run_cmd("git status --porcelain", check=False)
+    if not status:
+        subprocess.run(f'git pull --rebase "{push_url}" main', shell=True, cwd=str(REPO_DIR), capture_output=True)
+
+
 def git_push_with_retry(max_retries=3):
     """带 token、自动合并远程最新提交与重试机制的安全推送"""
     token = get_gh_token()
@@ -68,12 +79,16 @@ def git_push_with_retry(max_retries=3):
     print("🚀 正在推送到 GitHub，请稍候...")
 
     # 推送前自动拉取并变基远程最新提交（如在 GitHub 网页端编辑了文件）
-    subprocess.run(
+    rebase_res = subprocess.run(
         f'git pull --rebase "{push_url}" main',
         shell=True,
         cwd=str(REPO_DIR),
-        capture_output=True
+        capture_output=True,
+        text=True
     )
+    if rebase_res.returncode != 0:
+        # 如果冲突，立即取消变基，避免留在 rebase 中间状态
+        subprocess.run('git rebase --abort', shell=True, cwd=str(REPO_DIR), capture_output=True)
 
     for i in range(1, max_retries + 1):
         try:
@@ -90,12 +105,15 @@ def git_push_with_retry(max_retries=3):
             else:
                 # 若因落后远程提交被拒绝，再次自动拉取变基
                 if "fetch first" in res.stderr or "rejected" in res.stderr:
-                    subprocess.run(
+                    r = subprocess.run(
                         f'git pull --rebase "{push_url}" main',
                         shell=True,
                         cwd=str(REPO_DIR),
-                        capture_output=True
+                        capture_output=True,
+                        text=True
                     )
+                    if r.returncode != 0:
+                        subprocess.run('git rebase --abort', shell=True, cwd=str(REPO_DIR), capture_output=True)
                 print(f"⚠️ 推送出现网络波动或等待合并，第 {i}/{max_retries} 次重试中...")
                 time.sleep(1)
         except Exception:
@@ -255,9 +273,10 @@ def upload_file_to_release(src_file, token):
     """上传文件至 GitHub Release，支持覆盖已存在的同名文件"""
     print(f"📦 正在上传文件至 GitHub Releases ({RELEASE_TAG})...")
     res = subprocess.run(
-        ["gh", "release", "upload", RELEASE_TAG, str(src_file), "--clobber"],
+        ["gh", "release", "upload", RELEASE_TAG, str(src_file), "--clobber", "-R", REPO_OWNER_NAME],
         capture_output=True,
-        text=True
+        text=True,
+        cwd=str(REPO_DIR)
     )
     if res.returncode == 0:
         return True
@@ -385,7 +404,12 @@ def replace_download_package():
     # 若需要删除云端旧文件且新旧文件名不一致
     if clean_old and old_filename != new_file.name:
         print(f"🧹 正在清理 GitHub 云端旧文件: {old_filename}...")
-        del_res = subprocess.run(["gh", "release", "delete-asset", RELEASE_TAG, old_filename, "-y"], capture_output=True, text=True)
+        del_res = subprocess.run(
+            ["gh", "release", "delete-asset", RELEASE_TAG, old_filename, "-y", "-R", REPO_OWNER_NAME],
+            capture_output=True,
+            text=True,
+            cwd=str(REPO_DIR)
+        )
         if del_res.returncode == 0:
             print(f"✅ 云端旧文件已删除: {old_filename}")
         else:
@@ -435,7 +459,12 @@ def delete_download_package():
 
     if clean_cloud:
         print(f"🧹 正在从 GitHub 云端删除: {filename}...")
-        del_res = subprocess.run(["gh", "release", "delete-asset", RELEASE_TAG, filename, "-y"], capture_output=True, text=True)
+        del_res = subprocess.run(
+            ["gh", "release", "delete-asset", RELEASE_TAG, filename, "-y", "-R", REPO_OWNER_NAME],
+            capture_output=True,
+            text=True,
+            cwd=str(REPO_DIR)
+        )
         if del_res.returncode == 0:
             print(f"✅ 云端文件已删除: {filename}")
 
@@ -451,6 +480,7 @@ def delete_download_package():
 
 def interactive_menu():
     """交互式控制台菜单"""
+    sync_from_remote()
     while True:
         print("\n" + "=" * 48)
         print("   🚀 T大帅的个人网站 · 一键管理助手")
