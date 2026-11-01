@@ -5,8 +5,11 @@
 T大帅的个人网站一键管理与发布工具
 功能：
 1. 一键发布新博客文章（自动解析标题、摘要，复制文件到 posts/，更新主页索引）
-2. 一键上传大文件安装包至 GitHub Release（自动挂载到主页下载区）
-3. 一键同步与推送（自动获取 token，防网络中断重试）
+2. 博客文章管理（修改已有博文分类、一键下架/删除博文）
+3. 一键上传大文件安装包至 GitHub Release（自动挂载到主页下载区）
+4. 下载资源维护（支持老版本无缝替换与云端清理、资源下架）
+5. 一键同步与推送（自动获取 token，防网络中断重试）
+6. 网站运行与 GitHub Pages 构建状态查看
 """
 
 import os
@@ -27,6 +30,14 @@ RELEASE_TAG = "v1.0.0"
 REPO_OWNER_NAME = "Norlive666/norlive666.github.io"
 
 
+def get_git_env():
+    """获取包含明确 Git 仓库边界的环境变量，防止 gh 子命令报 Git 仓库探测错误"""
+    env = os.environ.copy()
+    env["GIT_DIR"] = str(REPO_DIR / ".git")
+    env["GIT_WORK_TREE"] = str(REPO_DIR)
+    return env
+
+
 def run_cmd(cmd, check=True, capture=True):
     """运行终端命令"""
     try:
@@ -34,6 +45,7 @@ def run_cmd(cmd, check=True, capture=True):
             cmd,
             shell=True,
             cwd=str(REPO_DIR),
+            env=get_git_env(),
             text=True,
             capture_output=capture,
             check=check
@@ -65,7 +77,13 @@ def sync_from_remote():
     push_url = f"https://{token}@github.com/{REPO_OWNER_NAME}.git"
     status = run_cmd("git status --porcelain", check=False)
     if not status:
-        subprocess.run(f'git pull --rebase "{push_url}" main', shell=True, cwd=str(REPO_DIR), capture_output=True)
+        subprocess.run(
+            f'git pull --rebase "{push_url}" main',
+            shell=True,
+            cwd=str(REPO_DIR),
+            env=get_git_env(),
+            capture_output=True
+        )
 
 
 def git_push_with_retry(max_retries=3):
@@ -78,17 +96,17 @@ def git_push_with_retry(max_retries=3):
     push_url = f"https://{token}@github.com/{REPO_OWNER_NAME}.git"
     print("🚀 正在推送到 GitHub，请稍候...")
 
-    # 推送前自动拉取并变基远程最新提交（如在 GitHub 网页端编辑了文件）
+    # 推送前自动拉取并变基远程最新提交
     rebase_res = subprocess.run(
         f'git pull --rebase "{push_url}" main',
         shell=True,
         cwd=str(REPO_DIR),
+        env=get_git_env(),
         capture_output=True,
         text=True
     )
     if rebase_res.returncode != 0:
-        # 如果冲突，立即取消变基，避免留在 rebase 中间状态
-        subprocess.run('git rebase --abort', shell=True, cwd=str(REPO_DIR), capture_output=True)
+        subprocess.run('git rebase --abort', shell=True, cwd=str(REPO_DIR), env=get_git_env(), capture_output=True)
 
     for i in range(1, max_retries + 1):
         try:
@@ -96,6 +114,7 @@ def git_push_with_retry(max_retries=3):
                 f'git push "{push_url}" main',
                 shell=True,
                 cwd=str(REPO_DIR),
+                env=get_git_env(),
                 capture_output=True,
                 text=True
             )
@@ -103,17 +122,17 @@ def git_push_with_retry(max_retries=3):
                 print("✅ 成功推送到 GitHub main 分支！约 30 秒后网站自动生效。")
                 return True
             else:
-                # 若因落后远程提交被拒绝，再次自动拉取变基
                 if "fetch first" in res.stderr or "rejected" in res.stderr:
                     r = subprocess.run(
                         f'git pull --rebase "{push_url}" main',
                         shell=True,
                         cwd=str(REPO_DIR),
+                        env=get_git_env(),
                         capture_output=True,
                         text=True
                     )
                     if r.returncode != 0:
-                        subprocess.run('git rebase --abort', shell=True, cwd=str(REPO_DIR), capture_output=True)
+                        subprocess.run('git rebase --abort', shell=True, cwd=str(REPO_DIR), env=get_git_env(), capture_output=True)
                 print(f"⚠️ 推送出现网络波动或等待合并，第 {i}/{max_retries} 次重试中...")
                 time.sleep(1)
         except Exception:
@@ -142,12 +161,37 @@ def quick_sync(commit_msg=None):
     git_push_with_retry()
 
 
+def choose_category(prompt_text="请选择文章分类：", default="随笔分享"):
+    """交互式分类选择器，支持快捷编号或自定义名称"""
+    print(f"\n📁 {prompt_text}")
+    print(" [1] 随笔分享 (日常随笔、经验技巧、配置心得)")
+    print(" [2] 使用说明 (软件/工具教程、安装包手册、文档指南)")
+    print(" [3] 输入自定义全新分类...")
+    choice = input("请输入编号 (1-3, 直接回车默认 1): ").strip()
+    if choice == "2":
+        return "使用说明"
+    elif choice == "3":
+        custom = input("请输入自定义分类名称: ").strip()
+        return custom or default
+    elif choice in ("1", ""):
+        return default
+    else:
+        # 如果用户直接输入了文字分类名称（如 ROS2），直接采纳
+        return choice
+
+
 def add_blog_post(md_path_str, category="随笔分享"):
     """一键发布新博客"""
     src_file = Path(md_path_str).expanduser().resolve()
     if not src_file.exists():
         print(f"❌ 找不到该文件: {src_file}")
         return
+
+    # 支持命令行快捷传参 "1" / "2"
+    if category == "1":
+        category = "随笔分享"
+    elif category == "2":
+        category = "使用说明"
 
     POSTS_DIR.mkdir(exist_ok=True)
     target_file = POSTS_DIR / src_file.name
@@ -213,10 +257,130 @@ def add_blog_post(md_path_str, category="随笔分享"):
         html_content = html_content.replace(count_match.group(0), f'<div class="section-count">共 {new_count} 篇</div>', 1)
 
     INDEX_FILE.write_text(html_content, encoding="utf-8")
-    print(f"✨ 已成功将《{title}》添加到主页博客列表！")
+    print(f"✨ 已成功将《{title}》添加到主页博客列表（分类: {category}）！")
 
     # 自动提交并推送
     quick_sync(f"feat: publish new blog post '{title}'")
+
+
+def get_existing_posts():
+    """解析 index.html 中当前存在的所有博客文章"""
+    html_content = INDEX_FILE.read_text(encoding="utf-8")
+    pattern = re.compile(r'([ \t]*(?:<!--\s*博客文章.*?-->\s*)?<a class="article-card"[\s\S]*?</a>)')
+    matches = pattern.findall(html_content)
+
+    items = []
+    for block in matches:
+        t_match = re.search(r'<h2 class="article-title">(.*?)</h2>', block)
+        c_match = re.search(r'data-category="(.*?)"', block) or re.search(r'<span class="badge">(.*?)</span>', block)
+        l_match = re.search(r'href="article\.html\?file=(.*?)"', block)
+        d_match = re.search(r'<time>(.*?)</time>', block)
+        title = t_match.group(1).strip() if t_match else "无标题"
+        cat = c_match.group(1).strip() if c_match else "未分类"
+        link = l_match.group(1).strip() if l_match else ""
+        date = d_match.group(1).strip() if d_match else ""
+        items.append({
+            "block": block,
+            "title": title,
+            "cat": cat,
+            "file": link,
+            "date": date
+        })
+    return items
+
+
+def edit_post_category():
+    """交互式修改已有博文的分类标签"""
+    posts = get_existing_posts()
+    if not posts:
+        print("❌ 当前主页暂未发布任何博客文章！")
+        return
+
+    print("\n📝 当前主页博文列表：")
+    for idx, p in enumerate(posts, 1):
+        print(f" [{idx}] 《{p['title']}》 (当前分类: {p['cat']} | 日期: {p['date']})")
+    print(" [0] 取消返回")
+
+    choice = input(f"\n请选择要修改分类的博文编号 (1-{len(posts)}): ").strip()
+    if not choice.isdigit() or int(choice) < 1 or int(choice) > len(posts):
+        print("已取消操作。")
+        return
+
+    target = posts[int(choice) - 1]
+    title = target["title"]
+    old_cat = target["cat"]
+    block = target["block"]
+
+    new_cat = choose_category(f"为《{title}》设置新分类（当前: {old_cat}）：", default=old_cat)
+    if new_cat == old_cat:
+        print("分类未发生改变，已取消。")
+        return
+
+    # 替换 card 中的 data-category 和 <span class="badge">
+    new_block = re.sub(r'data-category=".*?"', f'data-category="{new_cat}"', block, count=1)
+    new_block = re.sub(r'<span class="badge">.*?</span>', f'<span class="badge">{new_cat}</span>', new_block, count=1)
+
+    html_content = INDEX_FILE.read_text(encoding="utf-8")
+    if block in html_content:
+        html_content = html_content.replace(block, new_block, 1)
+        INDEX_FILE.write_text(html_content, encoding="utf-8")
+        print(f"✨ 已成功将《{title}》的分类从【{old_cat}】修改为【{new_cat}】！")
+        quick_sync(f"feat: update category for blog '{title}' -> '{new_cat}'")
+    else:
+        print("❌ 未在 index.html 中精确匹配到文章卡片！")
+
+
+def delete_blog_post():
+    """交互式删除/下架网站上的博客文章"""
+    posts = get_existing_posts()
+    if not posts:
+        print("❌ 当前主页暂未发布任何博客文章！")
+        return
+
+    print("\n📝 当前主页博文列表：")
+    for idx, p in enumerate(posts, 1):
+        print(f" [{idx}] 《{p['title']}》 (分类: {p['cat']} | 日期: {p['date']})")
+    print(" [0] 取消返回")
+
+    choice = input(f"\n请选择要删除/下架的博文编号 (1-{len(posts)}): ").strip()
+    if not choice.isdigit() or int(choice) < 1 or int(choice) > len(posts):
+        print("已取消操作。")
+        return
+
+    target = posts[int(choice) - 1]
+    title = target["title"]
+    block = target["block"]
+    post_file = target["file"]
+
+    confirm = input(f"⚠️ 确认要从网站下架博文《{title}》吗？(y/n): ").strip().lower()
+    if confirm != "y":
+        print("已取消。")
+        return
+
+    # 询问是否同步删除本地源文件
+    del_file_input = input(f"是否同步删除仓库中的源文件 '{post_file}'？(y/n, 默认 n 保留文件): ").strip().lower()
+    if del_file_input == "y" and post_file and post_file != "README.md":
+        local_target = REPO_DIR / post_file
+        if local_target.exists():
+            local_target.unlink()
+            print(f"🗑️ 已删除本地文件: {post_file}")
+
+    html_content = INDEX_FILE.read_text(encoding="utf-8")
+    if block in html_content:
+        html_content = html_content.replace(block, "", 1)
+
+        # 更新文章篇数
+        count_match = re.search(r'<div class="section-count">共\s*(\d+)\s*篇</div>', html_content)
+        if count_match:
+            old_count = int(count_match.group(1))
+            new_count = max(0, old_count - 1)
+            html_content = html_content.replace(count_match.group(0), f'<div class="section-count">共 {new_count} 篇</div>', 1)
+
+        INDEX_FILE.write_text(html_content, encoding="utf-8")
+        print(f"✨ 已成功从主页下架博文《{title}》！")
+        quick_sync(f"feat: remove blog post '{title}'")
+    else:
+        print("❌ 未在 index.html 中精确匹配到文章卡片！")
 
 
 def build_resource_card(filename, desc, file_ext, file_size_str, download_url):
@@ -276,7 +440,8 @@ def upload_file_to_release(src_file, token):
         ["gh", "release", "upload", RELEASE_TAG, str(src_file), "--clobber", "-R", REPO_OWNER_NAME],
         capture_output=True,
         text=True,
-        cwd=str(REPO_DIR)
+        cwd=str(REPO_DIR),
+        env=get_git_env()
     )
     if res.returncode == 0:
         return True
@@ -408,12 +573,13 @@ def replace_download_package():
             ["gh", "release", "delete-asset", RELEASE_TAG, old_filename, "-y", "-R", REPO_OWNER_NAME],
             capture_output=True,
             text=True,
-            cwd=str(REPO_DIR)
+            cwd=str(REPO_DIR),
+            env=get_git_env()
         )
         if del_res.returncode == 0:
             print(f"✅ 云端旧文件已删除: {old_filename}")
         else:
-            print(f"⚠️ 云端旧文件清理提示: {del_res.stderr.strip() or '已跳过'}")
+            print(f"ℹ️ 云端旧文件清理提示: {del_res.stderr.strip() or '已完成'}")
 
     # 替换 index.html 中的卡片
     html_content = INDEX_FILE.read_text(encoding="utf-8")
@@ -463,10 +629,13 @@ def delete_download_package():
             ["gh", "release", "delete-asset", RELEASE_TAG, filename, "-y", "-R", REPO_OWNER_NAME],
             capture_output=True,
             text=True,
-            cwd=str(REPO_DIR)
+            cwd=str(REPO_DIR),
+            env=get_git_env()
         )
         if del_res.returncode == 0:
             print(f"✅ 云端文件已删除: {filename}")
+        else:
+            print(f"ℹ️ 云端文件清理提示: {del_res.stderr.strip() or '已完成'}")
 
     html_content = INDEX_FILE.read_text(encoding="utf-8")
     if block in html_content:
@@ -478,41 +647,91 @@ def delete_download_package():
         print("❌ 未在 index.html 中精确匹配到卡片！")
 
 
+def check_site_status():
+    """查看网站构建与部署状态"""
+    print("\n" + "=" * 48)
+    print("   📊 网站运行与部署状态检查")
+    print("=" * 48)
+
+    print("\n🔍 本地工作区状态:")
+    status = run_cmd("git status -s", check=False)
+    if status:
+        print("有未提交的改动:\n" + status)
+    else:
+        print("工作区干净，无未暂存改动。")
+
+    unpushed = run_cmd("git log @{u}..HEAD --oneline", check=False)
+    if unpushed:
+        print("\n⚠️ 有尚未推送到 GitHub 的本地提交:\n" + unpushed)
+    else:
+        print("本地分支已与远程 GitHub 完全同步。")
+
+    print("\n🌐 GitHub Pages 构建记录 (最新 3 条):")
+    try:
+        res = subprocess.run(
+            ["gh", "run", "list", "--repo", REPO_OWNER_NAME, "--limit", "3"],
+            capture_output=True,
+            text=True,
+            cwd=str(REPO_DIR),
+            env=get_git_env()
+        )
+        if res.returncode == 0 and res.stdout.strip():
+            print(res.stdout.strip())
+        else:
+            print("未能获取到 GitHub Actions 构建列表。")
+    except Exception as e:
+        print(f"查询构建状态出错: {e}")
+
+    print(f"\n🔗 网站访问直链: https://norlive666.github.io")
+
+
 def interactive_menu():
     """交互式控制台菜单"""
     sync_from_remote()
     while True:
-        print("\n" + "=" * 48)
+        print("\n" + "=" * 50)
         print("   🚀 T大帅的个人网站 · 一键管理助手")
-        print("=" * 48)
-        print(" [1] 📝 发布新博客（支持输入 .md 路径，自动解析并挂载）")
-        print(" [2] 📦 上传新下载包（支持大文件，自动上传 Release 并挂载）")
-        print(" [3] 🔁 替换/升级已有下载包（指定替换老版本）")
-        print(" [4] 🗑️ 删除/下架已有下载包（从网站移除并可选清理云端文件）")
-        print(" [5] 🔄 一键同步与推送当前所有改动至 GitHub")
-        print(" [6] 🌐 在浏览器打开我的网站")
-        print(" [0] 🚪 退出")
-        print("-" * 48)
+        print("=" * 50)
+        print(" 【博文管理】")
+        print("  [1] 📝 发布新博客（支持输入 .md 路径，自动解析并挂载）")
+        print("  [2] 📁 修改已有博文分类（在“随笔分享”、“使用说明”或自定义分类间调整）")
+        print("  [3] 🗑️ 删除/下架已有博文（从主页列表移除，可选删除源文件）")
+        print(" 【下载资源管理】")
+        print("  [4] 📦 上传新下载包（支持大文件，自动上传 Release 并挂载）")
+        print("  [5] 🔁 替换/升级已有下载包（指定替换老版本并清理云端旧文件）")
+        print("  [6] 🗑️ 删除/下架已有下载包（从网站移除并可选清理云端文件）")
+        print(" 【站点同步与工具】")
+        print("  [7] 🔄 一键同步与推送当前所有改动至 GitHub")
+        print("  [8] 📊 查看网站构建状态与部署记录")
+        print("  [9] 🌐 在浏览器打开我的网站")
+        print("  [0] 🚪 退出")
+        print("-" * 50)
 
-        choice = input("请选择操作编号 (0-6): ").strip()
+        choice = input("请选择操作编号 (0-9): ").strip()
         if choice == "1":
             p = input("请输入 Markdown 文件路径: ").strip().strip("'\"")
             if p:
-                cat = input("请输入文章分类标签 (直接回车默认: 随笔分享): ").strip() or "随笔分享"
+                cat = choose_category("请选择此篇文章的分类：")
                 add_blog_post(p, cat)
         elif choice == "2":
+            edit_post_category()
+        elif choice == "3":
+            delete_blog_post()
+        elif choice == "4":
             p = input("请输入安装包/资源文件路径: ").strip().strip("'\"")
             if p:
                 d = input("请输入资源简短描述说明 (直接回车默认: 实用安装与资源包): ").strip() or "实用安装与资源包"
                 add_download_package(p, d)
-        elif choice == "3":
-            replace_download_package()
-        elif choice == "4":
-            delete_download_package()
         elif choice == "5":
+            replace_download_package()
+        elif choice == "6":
+            delete_download_package()
+        elif choice == "7":
             msg = input("请输入提交说明 (直接回车自动生成时间戳): ").strip()
             quick_sync(msg or None)
-        elif choice == "6":
+        elif choice == "8":
+            check_site_status()
+        elif choice == "9":
             subprocess.run("xdg-open https://norlive666.github.io 2>/dev/null || true", shell=True)
             print("🌐 已在浏览器中打开主页！")
         elif choice == "0":
@@ -532,10 +751,14 @@ if __name__ == "__main__":
             quick_sync(msg)
         elif cmd == "post":
             if len(sys.argv) < 3:
-                print("用法: ./update.sh post <md文件路径> [分类标签]")
+                print("用法: ./update.sh post <md文件路径> [分类标签(可填 1:随笔分享, 2:使用说明, 或自定义分类)]")
             else:
                 cat = sys.argv[3] if len(sys.argv) > 3 else "随笔分享"
                 add_blog_post(sys.argv[2], cat)
+        elif cmd in ("cat", "post-cat", "edit-cat"):
+            edit_post_category()
+        elif cmd in ("del-post", "post-del", "remove-post"):
+            delete_blog_post()
         elif cmd == "upload":
             if len(sys.argv) < 3:
                 print("用法: ./update.sh upload <安装包路径> [描述文字]")
@@ -546,5 +769,15 @@ if __name__ == "__main__":
             replace_download_package()
         elif cmd in ("delete", "remove", "rm"):
             delete_download_package()
+        elif cmd in ("status", "check"):
+            check_site_status()
         else:
-            print("未知命令！支持: sync | post <路径> | upload <路径> | replace | delete")
+            print("未知命令！支持:")
+            print("  post <md文件路径> [分类]  - 发布新博客")
+            print("  post-cat                   - 修改已有博文分类")
+            print("  del-post                   - 下架已有博文")
+            print("  upload <安装包路径> [描述] - 上传新下载资源")
+            print("  replace                    - 替换升级已有资源")
+            print("  delete                     - 下架已有资源")
+            print("  status                     - 查看网站与部署状态")
+            print("  sync [说明]                - 同步并推送最新改动")
