@@ -69,16 +69,16 @@
     @media (max-width: 620px) { .wrap { padding: 0 20px 56px; } }
 
     /* ── 报头 ── */
-    .masthead { padding: 50px 0 34px; border-bottom: 1px solid var(--ink); }
+    .masthead { padding: 26px 0 22px; border-bottom: 1px solid var(--ink); }
     .masthead .eyebrow {
       font-family: var(--mono); font-size: 10px; letter-spacing: 0.22em; text-transform: uppercase;
-      color: var(--accent); margin-bottom: 16px;
+      color: var(--accent); margin-bottom: 10px;
     }
     .masthead h1 { font-size: clamp(29px, 4.4vw, 50px); line-height: 1.12; letter-spacing: -0.035em; font-weight: 800; }
     .masthead h1 em { font-style: normal; color: var(--muted); }
-    .masthead .lede { margin-top: 14px; max-width: 48ch; font-size: 14px; line-height: 1.75; color: var(--ink-soft); }
+    .masthead .lede { font-size: 14px; line-height: 1.7; color: var(--ink-soft); }
     .masthead-meta {
-      margin-top: 22px; display: flex; flex-wrap: wrap; gap: 6px 24px;
+      margin-top: 16px; display: flex; flex-wrap: wrap; gap: 6px 24px;
       font-family: var(--mono); font-size: 10.5px; letter-spacing: 0.06em; color: var(--muted);
     }
     .masthead-meta b { color: var(--ink); font-weight: 600; }
@@ -98,6 +98,155 @@
     }
     .sec-head h2 { font-size: 12.5px; font-weight: 700; letter-spacing: 0.02em; }
     .section-count { font-family: var(--mono); font-size: 10px; letter-spacing: 0.08em; color: var(--muted); white-space: nowrap; }
+
+    /* ── 文件夹风格分类系统 ── */
+    .folder-shelf {
+      margin-top: 18px;
+      margin-bottom: 6px;
+    }
+    .folder-tabs-wrapper {
+      position: relative;
+      overflow-x: auto;
+      scrollbar-width: thin;
+      -webkit-overflow-scrolling: touch;
+      padding-bottom: 0;
+    }
+    .folder-tabs-wrapper::-webkit-scrollbar {
+      height: 4px;
+    }
+    .folder-tabs-wrapper::-webkit-scrollbar-thumb {
+      background: #e0e0e0;
+      border-radius: 2px;
+    }
+    .folder-tabs {
+      display: flex;
+      align-items: flex-end;
+      gap: 5px;
+      border-bottom: 2px solid var(--ink);
+      padding: 6px 2px 0 2px;
+      min-width: max-content;
+    }
+    .folder-tab {
+      appearance: none;
+      -webkit-appearance: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      padding: 8px 14px 7px 12px;
+      background: #f5f5f5;
+      color: var(--ink-soft);
+      border: 1px solid var(--line);
+      border-bottom: none;
+      border-radius: 6px 6px 0 0;
+      font-family: var(--sans);
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      position: relative;
+      bottom: -2px;
+      transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+      user-select: none;
+    }
+    .folder-tab:hover {
+      background: #ebebeb;
+      color: var(--ink);
+    }
+    .folder-tab .folder-icon {
+      font-size: 13.5px;
+      line-height: 1;
+      display: inline-block;
+      transition: transform 0.18s ease;
+    }
+    .folder-tab:hover .folder-icon {
+      transform: scale(1.12);
+    }
+    .folder-tab .folder-count {
+      font-family: var(--mono);
+      font-size: 9.5px;
+      font-weight: 700;
+      line-height: 1;
+      padding: 2px 6px;
+      border-radius: 9px;
+      background: rgba(0, 0, 0, 0.06);
+      color: var(--muted);
+      transition: all 0.15s ease;
+    }
+    .folder-tab.active {
+      background: #ffffff;
+      color: var(--ink);
+      font-weight: 700;
+      border-color: var(--ink);
+      border-top: 2.5px solid var(--accent);
+      border-bottom: 2px solid #ffffff;
+      z-index: 2;
+    }
+    .folder-tab.active .folder-count {
+      background: var(--accent-soft);
+      color: var(--accent);
+    }
+
+    .folder-status-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 8px 14px;
+      background: var(--bg-soft);
+      border: 1px solid var(--line);
+      border-top: none;
+      font-size: 11px;
+      margin-bottom: 4px;
+    }
+    .folder-path {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-family: var(--mono);
+      font-size: 11px;
+      color: var(--ink);
+    }
+    .folder-path .path-icon {
+      font-size: 12.5px;
+    }
+    .folder-path .path-label {
+      color: var(--muted);
+      font-size: 10.5px;
+    }
+    .folder-path .path-current {
+      font-weight: 600;
+      color: var(--accent);
+    }
+    .folder-count-badge {
+      font-family: var(--mono);
+      font-size: 10px;
+      color: var(--muted);
+      white-space: nowrap;
+    }
+
+    .folder-empty-state {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 48px 20px;
+      text-align: center;
+      border-bottom: 1px solid var(--line);
+    }
+    .folder-empty-state .empty-icon {
+      font-size: 34px;
+      margin-bottom: 8px;
+      opacity: 0.6;
+    }
+    .folder-empty-state .empty-title {
+      font-size: 13.5px;
+      font-weight: 700;
+      color: var(--ink);
+      margin-bottom: 4px;
+    }
+    .folder-empty-state .empty-desc {
+      font-size: 11.5px;
+      color: var(--muted);
+    }
 
     /* ── 文章列表 ── */
     .article-list { counter-reset: post; }
@@ -224,7 +373,6 @@
     <!-- 报头 -->
     <section class="masthead">
       <div class="eyebrow">Personal Site · GitHub Pages</div>
-      <h1>记录思考，<br>资源分享。</h1>
       <p class="lede">欢迎来到我的个人网站！这里记录我的项目实践、技术文章与公开资源。</p>
       <div class="masthead-meta">
         <span>内容分类 <b>技术 / 随笔 / 资源</b></span>
@@ -242,7 +390,7 @@
           <img src="https://avatars.githubusercontent.com/Norlive666" alt="T大帅 头像">
           <div>
             <h3>T大帅</h3>
-            <p>记录思考 · 资源分享</p>
+            <p>技术博客 · 资源分享</p>
           </div>
         </div>
 
@@ -359,10 +507,28 @@
           <h2>最新博客文章</h2>
           <div class="section-count">共 6 篇</div>
         </div>
+
+        <!-- 文件夹风格分类栏 (支持完全自定义分类，自动动态生成) -->
+        <div class="folder-shelf">
+          <div class="folder-tabs-wrapper">
+            <div class="folder-tabs" id="folderTabs" role="tablist">
+              <!-- 文件夹标签由 JS 自动根据文章中的分类动态生成 -->
+            </div>
+          </div>
+          <div class="folder-status-bar">
+            <div class="folder-path">
+              <span class="path-icon">📂</span>
+              <span class="path-label">当前目录:</span>
+              <span class="path-current" id="folderCurrentPath">/ 全部文章</span>
+            </div>
+            <div class="folder-count-badge" id="folderFilteredCount">共 6 篇</div>
+          </div>
+        </div>
+
         <!-- 文章列表：site_manager.py 会在此容器内插入新卡片 -->
         <div class="article-list">
           <!-- 博客文章：电脑休眠问题 -->
-          <a class="article-card" href="article.html?file=posts/linux下电脑休眠卡死问题.md">
+          <a class="article-card" data-category="随笔分享" href="article.html?file=posts/linux下电脑休眠卡死问题.md">
             <div class="article-meta">
               <span class="badge">随笔分享</span>
               <time>2026-10-14</time>
@@ -372,7 +538,7 @@
             <p class="article-summary">电脑合上屏幕后进入休眠，再次打开屏幕时，系统可能卡死在锁屏界面，无法正常操作，只能强制重启。</p>
           </a>
           <!-- 博客文章：GNOME 实用扩展推荐 -->
-          <a class="article-card" href="article.html?file=posts/GNOME实用扩展.md">
+          <a class="article-card" data-category="随笔分享" href="article.html?file=posts/GNOME实用扩展.md">
             <div class="article-meta">
               <span class="badge">随笔分享</span>
               <time>2026-10-11</time>
@@ -382,7 +548,7 @@
             <p class="article-summary">推荐、顺便记录一下本人使用的gnome拓展，可以极大的美观、简化桌面，提高便捷性。</p>
           </a>
           <!-- 博客文章： 个人网站一键管理与发布脚本（update.sh）使用指南 -->
-          <a class="article-card" href="article.html?file=posts/网站一键管理脚本使用说明.md">
+          <a class="article-card" data-category="配置分享" href="article.html?file=posts/网站一键管理脚本使用说明.md">
             <div class="article-meta">
               <span class="badge">配置分享</span>
               <time>2026-10-10</time>
@@ -392,7 +558,7 @@
             <p class="article-summary">本文档介绍针对个人主页及博客系统量身打造的 **全自动管理脚本（`update.sh` / `site_manager.py`）** 的核心功能，以及如何将其无缝配置到 `~/下载...</p>
           </a>
           <!-- 博客文章 1：DSH 懒人整合包使用说明 -->
-          <a class="article-card" href="article.html?file=posts/dsh-guide.md">
+          <a class="article-card" data-category="使用说明" href="article.html?file=posts/dsh-guide.md">
             <div class="article-meta">
               <span class="badge">使用说明</span>
               <time>2026-10-10</time>
@@ -402,7 +568,7 @@
             <p class="article-summary">在官方 harness 基础上添加了悬浮窗、插件市场、快速 API 设置等高效插件，并集成完整运行环境，实现开箱即用效果...</p>
           </a>
            <!-- 博客文章 2：vim快捷键配置说明 -->
-          <a class="article-card" href="article.html?file=posts/VSCode-Vim快捷键配置记录.md">
+          <a class="article-card" data-category="配置分享" href="article.html?file=posts/VSCode-Vim快捷键配置记录.md">
             <div class="article-meta">
               <span class="badge">配置分享</span>
               <time>2026-09-20</time>
@@ -413,7 +579,7 @@
           </a>
 
           <!-- 博客文章 3：README 说明 -->
-          <a class="article-card" href="article.html?file=README.md">
+          <a class="article-card" data-category="项目说明" href="article.html?file=README.md">
             <div class="article-meta">
               <span class="badge">项目说明</span>
               <time>2026-10-09</time>
@@ -462,6 +628,132 @@
         const channelName = selectEl.options[selectEl.selectedIndex].text;
         showToast('已切换至：' + channelName + '，点击【下载】即可');
       }
+    }
+
+    // ── 文件夹分类导航系统（动态发现与过滤，支持任意自定义分类） ──
+    function initFolderCategories() {
+      const tabsContainer = document.getElementById('folderTabs');
+      const currentPathEl = document.getElementById('folderCurrentPath');
+      const filteredCountEl = document.getElementById('folderFilteredCount');
+      const articleList = document.querySelector('.article-list');
+      if (!tabsContainer || !articleList) return;
+
+      const cards = Array.from(articleList.querySelectorAll('.article-card'));
+      const totalCount = cards.length;
+
+      // 提取分类与对应数量
+      const categoryMap = new Map();
+      cards.forEach(card => {
+        let cat = card.getAttribute('data-category');
+        if (!cat) {
+          const badge = card.querySelector('.badge');
+          cat = badge ? badge.textContent.trim() : '未分类';
+          card.setAttribute('data-category', cat);
+        }
+        categoryMap.set(cat, (categoryMap.get(cat) || 0) + 1);
+      });
+
+      // 渲染文件夹标签
+      tabsContainer.innerHTML = '';
+
+      // 1. 全部文章文件夹
+      const allTab = document.createElement('button');
+      allTab.type = 'button';
+      allTab.className = 'folder-tab active';
+      allTab.dataset.cat = 'all';
+      allTab.setAttribute('role', 'tab');
+      allTab.setAttribute('aria-selected', 'true');
+      allTab.innerHTML = `
+        <span class="folder-icon">📁</span>
+        <span class="folder-name">全部文章</span>
+        <span class="folder-count">${totalCount}</span>
+      `;
+      tabsContainer.appendChild(allTab);
+
+      // 2. 自定义分类文件夹
+      categoryMap.forEach((count, cat) => {
+        const tab = document.createElement('button');
+        tab.type = 'button';
+        tab.className = 'folder-tab';
+        tab.dataset.cat = cat;
+        tab.setAttribute('role', 'tab');
+        tab.setAttribute('aria-selected', 'false');
+        tab.innerHTML = `
+          <span class="folder-icon">📁</span>
+          <span class="folder-name">${cat}</span>
+          <span class="folder-count">${count}</span>
+        `;
+        tabsContainer.appendChild(tab);
+      });
+
+      // 切换文件夹逻辑
+      function switchFolder(targetCat, activeTabBtn) {
+        tabsContainer.querySelectorAll('.folder-tab').forEach(t => {
+          t.classList.remove('active');
+          t.setAttribute('aria-selected', 'false');
+          const icon = t.querySelector('.folder-icon');
+          if (icon) icon.textContent = '📁';
+        });
+
+        if (activeTabBtn) {
+          activeTabBtn.classList.add('active');
+          activeTabBtn.setAttribute('aria-selected', 'true');
+          const icon = activeTabBtn.querySelector('.folder-icon');
+          if (icon) icon.textContent = '📂';
+        }
+
+        let visibleCount = 0;
+        cards.forEach(card => {
+          const cat = card.getAttribute('data-category');
+          if (targetCat === 'all' || cat === targetCat) {
+            card.style.display = '';
+            visibleCount++;
+          } else {
+            card.style.display = 'none';
+          }
+        });
+
+        if (currentPathEl) {
+          currentPathEl.textContent = targetCat === 'all' ? '/ 全部文章' : `/ ${targetCat}`;
+        }
+        if (filteredCountEl) {
+          filteredCountEl.textContent = targetCat === 'all' ? `共 ${totalCount} 篇` : `显示 ${visibleCount} 篇`;
+        }
+
+        // 空状态处理
+        let emptyState = document.getElementById('folderEmptyState');
+        if (visibleCount === 0) {
+          if (!emptyState) {
+            emptyState = document.createElement('div');
+            emptyState.id = 'folderEmptyState';
+            emptyState.className = 'folder-empty-state';
+            emptyState.innerHTML = `
+              <div class="empty-icon">📂</div>
+              <div class="empty-title">当前文件夹为空</div>
+              <div class="empty-desc">该分类下暂未发布任何文章</div>
+            `;
+            articleList.appendChild(emptyState);
+          }
+          emptyState.style.display = 'flex';
+        } else if (emptyState) {
+          emptyState.style.display = 'none';
+        }
+      }
+
+      // 点击标签事件
+      tabsContainer.addEventListener('click', (e) => {
+        const tabBtn = e.target.closest('.folder-tab');
+        if (!tabBtn) return;
+        const cat = tabBtn.dataset.cat;
+        switchFolder(cat, tabBtn);
+      });
+    }
+
+    // 初始化文件夹分类系统
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', initFolderCategories);
+    } else {
+      initFolderCategories();
     }
   </script>
 </body>

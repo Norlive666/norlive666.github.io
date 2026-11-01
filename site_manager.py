@@ -187,7 +187,7 @@ def add_blog_post(md_path_str, category="随笔分享"):
 
     # 构建文章卡片
     new_card = f"""          <!-- 博客文章：{title} -->
-          <a class="article-card" href="article.html?file=posts/{target_file.name}">
+          <a class="article-card" data-category="{category}" href="article.html?file=posts/{target_file.name}">
             <div class="article-meta">
               <span class="badge">{category}</span>
               <time>{today}</time>
